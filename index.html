@@ -1,342 +1,341 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Prime X Prem - Neon YouTube Music Search</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Orbitron', Arial, sans-serif;
-      background: radial-gradient(ellipse at 50% 20%, #06176c 0%, #1a0945 100%);
-      min-height: 100vh;
-      margin: 0;
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .neon-music-bg {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-    }
-    .neon-bar {
-      position: absolute; bottom: 0; width: 5px;
-      background: linear-gradient(to top, #ff40a1, #1ff6ff 80%, transparent 100%);
-      border-radius: 6px;
-      animation: bounceMusic 2s infinite ease-in-out;
-    }
-    .neon-bar:nth-child(1) { left: 14vw; height: 70px; animation-delay: 0s;}
-    .neon-bar:nth-child(2) { left: 19vw; height: 140px; animation-delay: .25s;}
-    .neon-bar:nth-child(3) { left: 23vw; height: 100px; animation-delay: .5s;}
-    .neon-bar:nth-child(4) { left: 31vw; height: 120px; animation-delay: .8s;}
-    .neon-bar:nth-child(5) { left: 39vw; height: 150px; animation-delay: .1s;}
-    .neon-bar:nth-child(6) { left: 60vw; height: 110px; animation-delay: .3s;}
-    .neon-bar:nth-child(7) { left: 68vw; height: 200px; animation-delay: .9s;}
-    .neon-bar:nth-child(8) { left: 74vw; height: 150px; animation-delay: .7s;}
-    .neon-bar:nth-child(9) { left: 78vw; height: 90px; animation-delay: 1.3s;}
-    .neon-bar:nth-child(10){ left: 90vw; height: 125px; animation-delay: .5s;}
-    @keyframes bounceMusic {
-      0%,100%{transform:translateY(0);}
-      18%{transform:translateY(-22px);}
-      40%{transform:translateY(-42px);}
-      60%{transform:translateY(2px);}
-      82%{transform:translateY(-16px);}
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prime X Music — Search & Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#030311; --panel: rgba(255,255,255,0.03);
+    --neon1:#00f0ff; --neon2:#7cff5f; --accent:#ff0077;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#030311,#071026);color:#e6f7ff}
+  .wrap{max-width:1200px;margin:24px auto;padding:18px;display:grid;grid-template-columns:360px 1fr;gap:18px}
+  header{grid-column:1/3;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:8px;background:linear-gradient(90deg,var(--neon1),var(--neon2));display:flex;align-items:center;justify-content:center;color:#001;font-weight:800}
+  h1{margin:0;font-size:18px}
+  .search{display:flex;gap:8px}
+  input.searchbox{padding:10px 12px;border-radius:10px;border:none;width:380px;background:#061428;color:#e6f7ff}
+  button.searchBtn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#002;cursor:pointer;font-weight:700}
 
-    .wrapper {
-      max-width: 900px;
-      margin: 60px auto 0 auto;
-      background: rgba(11,15,55,0.94);
-      border-radius: 18px;
-      box-shadow: 0 0 50px #1ff6ffc0, 0 0 140px #ff40a180 inset;
-      border: 2.5px solid #1ff6ff;
-      padding: 36px 18px 44px 18px;
-      position: relative;
-      z-index: 2;
-    }
-    h1 {
-      color: #ff40a1;
-      font-size: 2.1rem;
-      text-shadow: 0 0 16px #ff40a1, 0 0 22px #1ff6ff;
-      margin-bottom: 25px;
-      text-align: center;
-      letter-spacing: 2px;
-    }
-    .search-bar {
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto 28px auto;
-      display: flex;
-      align-items: center;
-      background: #182058;
-      border-radius: 12px;
-      box-shadow: 0 0 18px #1ff6ff77;
-      padding: 5px 8px;
-    }
-    .search-bar input {
-      flex: 1;
-      padding: 15px 18px;
-      outline: none;
-      border: none;
-      font-size: 1.13rem;
-      background: none;
-      color: #1ff6ff;
-      font-family: inherit;
-      border-radius: 8px;
-      box-shadow: 0 0 4px #1ff6ffc9;
-    }
-    .search-bar button {
-      background: #1ff6ff;
-      color: #07041b;
-      font-weight: bold;
-      font-size: 1.15rem;
-      border-radius: 8px;
-      border: none;
-      padding: 12px 24px;
-      cursor: pointer;
-      box-shadow: 0 0 16px #1ff6ffc9;
-      margin-left: 8px;
-      transition: background .2s;
-    }
-    .search-bar button:hover {
-      background: #ff40a1; color: #fff;
-    }
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 22px;
-      margin-top: 16px;
-      margin-bottom: 31px;
-    }
-    .yt-card {
-      background: rgba(25,40,90,0.95);
-      border-radius: 12px;
-      box-shadow: 0 0 17px #1ff6ff50;
-      padding: 11px 12px 8px 12px;
-      transition: box-shadow .18s, transform .18s;
-      display: flex; flex-direction: column;
-      position: relative;
-    }
-    .yt-card:hover {
-      box-shadow: 0 0 44px #ff40a1bb, 0 0 17px #1ff6ff50;
-      transform: translateY(-4px) scale(1.04);
-      z-index: 3;
-    }
-    .yt-thumb {
-      border-radius: 8px;
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      margin-bottom: 9px;
-      box-shadow: 0 0 17px #1ff6ff40;
-    }
-    .yt-title {
-      color: #1ff6ff;
-      font-weight: bold;
-      font-size: 1.06rem;
-      margin-bottom: 3px;
-      text-shadow: 0 0 10px #1ff6ff66;
-    }
-    .yt-artist {
-      color: #ff40a1;
-      font-size: .93em;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-    .yt-meta {
-      font-size: .88em;
-      color: #b1efff;
-      margin-bottom: 4px;
-    }
-    .yt-action {
-      margin-top: 8px;
-      text-align: right;
-    }
-    .yt-play-btn {
-      background: #1ff6ff;
-      color: #1a0366;
-      border-radius: 10px;
-      border: none;
-      font-weight: bold;
-      letter-spacing:.6px;
-      font-size: 1rem;
-      padding: 8px 17px;
-      cursor: pointer;
-      box-shadow: 0 0 14px #1ff6ff80, 0 0 7px #ff40a180 inset;
-      transition: background .2s;
-    }
-    .yt-play-btn:hover { background: #ff40a1; color: #fff; }
-    .auto-status {text-align:center;margin-bottom:9px;color:#1ff6ff;text-shadow:0 0 6px #1ff6ff99;}
-    @media (max-width: 540px) {
-      .wrapper{padding: 22px 2px;}
-      .result-grid {gap: 11px;}
-    }
+  /* left menu / feed */
+  .panel{background:var(--panel);border-radius:12px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,0.6)}
+  .section-title{font-weight:700;color:var(--neon1);margin-bottom:10px}
+  .suggestions{display:flex;flex-direction:column;gap:10px}
+  .sug{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer}
+  .sug small{display:block;color:#a9cbd6;margin-top:4px}
 
-    /* Neon Popup Styles (as before) */
-    .popup {
-      position: fixed;
-      top: 25px;
-      right: 40px;
-      z-index: 20;
-      background:rgba(11,15,55,0.98);
-      border: 2.5px solid #ff40a1;
-      box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
-      border-radius: 12px;
-      padding: 32px 22px 22px 22px;
-      min-width: 300px;
-      text-align: center;
-      animation: popupShow 0.6s cubic-bezier(.74,.12,.44,1.02) both;
-      font-family: 'Orbitron', Arial, sans-serif;
-    }
-    @keyframes popupShow {
-      0%{opacity:0;transform:scale(0.3);}
-      100%{opacity:1;transform:scale(1);}
-    }
-    .popup-title {
-      font-size: 1.24rem;
-      color: #ff40a1;
-      margin-bottom: 9px;
-      text-shadow: 0 0 14px #ff40a1;
-      letter-spacing: 3px;
-    }
-    .popup-desc {
-      font-size: 0.98rem;
-      color: #1ff6ff;
-      margin-bottom: 15px;
-      text-shadow: 0 0 4px #1ff6ff;
-    }
-    .telegram-link {
-      display: inline-block;
-      background: #1ff6ff;
-      color: #1a0066;
-      padding: 10px 18px;
-      border-radius: 18px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1.06rem;
-      box-shadow: 0 0 16px #1ff6ffac, 0 0 10px #ff40a1b9 inset;
-      transition: background 0.18s;
-      border: 1.5px solid #fff;
-    }
-    .telegram-link:hover {
-      background: #ff40a1; color: #fff; box-shadow: 0 0 24px #ff40a1;
-    }
-    .popup-close {
-      font-size: 1.2rem;
-      border: none;
-      background: none;
-      color: #ff40a1;
-      position: absolute;
-      top: 14px; right: 17px;
-      cursor: pointer;
-      outline: none;
-      opacity: 0.88;
-      transition: color 0.2s, opacity .18s;
-    }
-    .popup-close:hover { color: #1ff6ff; opacity: 1; }
-  </style>
+  /* results list */
+  .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .card{background:rgba(255,255,255,0.02);border-radius:10px;padding:10px;display:flex;gap:10px;align-items:flex-start}
+  .thumb{width:140px;height:84px;border-radius:8px;background:#111;flex-shrink:0;object-fit:cover}
+  .meta{flex:1}
+  .meta h3{margin:0;font-size:14px}
+  .meta p{margin:6px 0 0;color:#9fb4c0;font-size:12px}
+
+  /* player sticky bottom-mini */
+  .miniPlayer{
+    position:fixed;left:18px;right:18px;bottom:18px;height:86px;background:linear-gradient(90deg,rgba(0,0,0,0.55),rgba(2,8,20,0.6));border-radius:12px;display:flex;align-items:center;padding:10px;gap:12px;z-index:60;box-shadow:0 18px 40px rgba(0,0,0,0.6)
+  }
+  .miniThumb{width:68px;height:68px;border-radius:8px;object-fit:cover}
+  .miniInfo{flex:1}
+  .miniTitle{font-weight:700}
+  .miniControls{display:flex;gap:8px;align-items:center}
+  .btn{padding:8px 12px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#001;cursor:pointer;font-weight:700}
+
+  .note{font-size:12px;color:#9fb4c0}
+
+  /* modal new-user */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:80}
+  .mcard{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:10px;text-align:center;width:320px}
+  .mcard input{width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:#e6f7ff;margin-top:12px}
+
+  @media (max-width:980px){.wrap{grid-template-columns:1fr}.miniPlayer{left:10px;right:10px}}
+</style>
 </head>
 <body>
-<div class="neon-music-bg" aria-hidden="true">
-  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
-  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
-  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">PX</div>
+      <div>
+        <h1>Prime X Music</h1>
+        <div class="note">Search • Play • Background-friendly</div>
+      </div>
+    </div>
+
+    <div class="search">
+      <input class="searchbox" id="q" placeholder="Search songs, artists, albums..." />
+      <button class="searchBtn" id="searchBtn">Search</button>
+    </div>
+  </header>
+
+  <!-- Left column: categories / quick feed -->
+  <aside class="panel">
+    <div class="section-title">Quick Picks</div>
+    <div class="suggestions">
+      <div class="sug" data-q="Top Hits 2024">Top Hits 2024 <small>Latest trending songs</small></div>
+      <div class="sug" data-q="Bollywood hits">Bollywood hits <small>Popular Indian songs</small></div>
+      <div class="sug" data-q="Lo-fi chill beats">Lo-fi chill beats <small>Study / Relax</small></div>
+      <div class="sug" data-q="Party mix">Party mix <small>Dance & EDM</small></div>
+    </div>
+
+    <div style="height:18px"></div>
+    <div class="section-title">About</div>
+    <div class="note">Join our Telegram: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></div>
+    <div style="height:12px"></div>
+    <div class="section-title">Tips</div>
+    <div class="note">Press Play once to allow background playback. Browser autoplay rules may require a gesture.</div>
+  </aside>
+
+  <!-- Main results area -->
+  <main>
+    <div id="resultsContainer" class="panel">
+      <div id="feedTitle" class="section-title">Trending Music</div>
+      <div id="results" class="results"></div>
+      <div id="loadMoreWrap" style="text-align:center;margin-top:12px"><button id="loadMore" class="btn" style="display:none">Load more</button></div>
+    </div>
+  </main>
 </div>
 
-<div class="wrapper">
-  <h1>🎶 Neon YouTube Music Search</h1>
-  <div class="search-bar">
-    <input type="text" id="musicSearch" placeholder="Search music as on YouTube (e.g. Alan Walker, BTS)">
-    <button onclick="triggerSearch()">Search</button>
+<!-- mini player -->
+<div id="mini" class="miniPlayer" style="display:none">
+  <img id="miniThumb" class="miniThumb" src="" alt="thumb">
+  <div class="miniInfo">
+    <div id="miniTitle" class="miniTitle">—</div>
+    <div id="miniChannel" class="note">Prime X</div>
+    <div id="miniProgress" style="height:6px;background:rgba(255,255,255,0.04);border-radius:6px;margin-top:8px;overflow:hidden"><div id="miniBar" style="height:100%;width:0;background:linear-gradient(90deg,var(--neon1),var(--neon2));"></div></div>
   </div>
-  <div class="auto-status" id="autoFetchStatus">Auto-finding trending music from YouTube...</div>
-  <div class="result-grid" id="resultGrid"></div>
+  <div class="miniControls">
+    <button id="miniPrev" class="btn">Prev</button>
+    <button id="miniPlay" class="btn">Play</button>
+    <button id="miniNext" class="btn">Next</button>
+  </div>
 </div>
 
-<!-- Neon Popup for New User -->
-<div class="popup" id="userPopup">
-  <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
-  <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
-  <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
-  <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
+<!-- new user modal -->
+<div id="modal" class="modal" style="display:none">
+  <div class="mcard">
+    <h3 style="color:var(--neon1)">Welcome to Prime X Music</h3>
+    <p class="note">Enter your name to continue and join our Telegram for latest campaigns.</p>
+    <input id="uname" placeholder="Enter your name (optional)" />
+    <div style="margin-top:12px">
+      <button id="joinBtn" class="btn">Continue</button>
+    </div>
+    <div style="margin-top:10px" class="note">Join Telegram: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></div>
+  </div>
 </div>
+
+<!-- YouTube IFrame API and script -->
 <script>
-setTimeout(closePopup, 7000);
-function closePopup() { var popup = document.getElementById('userPopup'); if(popup) popup.style.display = 'none'; }
+/* ====== CONFIGURE HERE ====== */
+const YT_API_KEY = 'YOUR_YOUTUBE_API_KEY'; // <-- set your YouTube Data API v3 key
+const DEFAULT_QUERY = 'Top Hits 2024';     // home feed query
+let nextPageToken = null;
+let lastQuery = DEFAULT_QUERY;
 
-// DEMO: Trending songs as "Auto Results"
-// Replace with live YouTube search via Data API for production!
-const demoSongs = [
-  {
-    title:"Alan Walker - Faded",
-    artist:"Alan Walker",
-    thumb:"https://i.ytimg.com/vi/60ItHLz5WEA/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=60ItHLz5WEA",
-    duration:"3:32"
-  },
-  {
-    title:"The Weeknd - Blinding Lights",
-    artist:"The Weeknd",
-    thumb:"https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=fHI8X4OXluQ",
-    duration:"3:21"
-  },
-  {
-    title:"BTS - Dynamite",
-    artist:"BTS",
-    thumb:"https://i.ytimg.com/vi/gdZLi9oWNZg/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=gdZLi9oWNZg",
-    duration:"3:19"
-  },
-  {
-    title:"Marshmello & Jonas Brothers - Leave Before You Love Me",
-    artist:"Marshmello, Jonas Brothers",
-    thumb:"https://i.ytimg.com/vi/Gvc4Q3x3qQg/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=Gvc4Q3x3qQg",
-    duration:"2:35"
-  },
-  {
-    title:"Imagine Dragons - Believer",
-    artist:"Imagine Dragons",
-    thumb:"https://i.ytimg.com/vi/7wtfhZwyrcc/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=7wtfhZwyrcc",
-    duration:"3:24"
-  }
-];
+/* ====== Helpers: DOM ====== */
+const resultsEl = document.getElementById('results');
+const feedTitle = document.getElementById('feedTitle');
+const loadMoreBtn = document.getElementById('loadMore');
 
-function renderResults(songs) {
-  document.getElementById('resultGrid').innerHTML = 
-    songs.map(song =>
-      `<div class="yt-card">
-        <img class="yt-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
-        <div class="yt-title">${song.title}</div>
-        <div class="yt-artist">${song.artist}</div>
-        <div class="yt-meta">${song.duration} • Ad-free playback</div>
-        <div class="yt-action">
-          <a href="${song.url}" target="_blank">
-            <button class="yt-play-btn">Play</button>
-          </a>
-        </div>
-      </div>`
-    ).join('');
+/* ====== Simple playlist state ====== */
+let queue = [];
+let curIndex = -1;
+let player; // YT player instance
+let progressInterval;
+
+/* ====== Initialize UI & handlers ====== */
+document.getElementById('searchBtn').addEventListener('click', ()=> search(document.getElementById('q').value.trim() || DEFAULT_QUERY));
+document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('searchBtn').click(); });
+document.querySelectorAll('.sug').forEach(s=> s.addEventListener('click', ()=>{ search(s.dataset.q); document.getElementById('q').value = s.dataset.q;}));
+loadMoreBtn.addEventListener('click', ()=> search(lastQuery, nextPageToken));
+
+/* ====== New-user modal logic ====== */
+if(!localStorage.getItem('px_user')) {
+  document.getElementById('modal').style.display = 'flex';
 }
-// Auto-fetch on load (demo)
-setTimeout(()=> {
-  renderResults(demoSongs);
-  document.getElementById('autoFetchStatus').textContent = "Trending YouTube music (simulated, auto-fetched)";
-},950);
-
-// Search bar logic
-function triggerSearch() {
-  const val = document.getElementById('musicSearch').value.trim().toLowerCase();
-  if(!val) { renderResults(demoSongs); return; }
-  // Simulate search: filter results by title or artist (in real API: send to server/YT Data API)
-  const filtered = demoSongs.filter(s => 
-    s.title.toLowerCase().includes(val) || s.artist.toLowerCase().includes(val)
-  );
-  renderResults(filtered.length?filtered:demoSongs); // fallback to trending if nothing matches
-}
-document.getElementById('musicSearch').addEventListener('keyup', function(e){
-  if(e.key==='Enter')triggerSearch();
+document.getElementById('joinBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('uname').value.trim();
+  if(name) localStorage.setItem('px_user', name);
+  else localStorage.setItem('px_user', 'Guest');
+  document.getElementById('modal').style.display = 'none';
+  alert('Welcome! Join Telegram for updates: https://t.me/primexprem');
 });
+
+/* ====== YouTube Data API search ====== */
+async function search(q, pageToken=null){
+  if(!YT_API_KEY || YT_API_KEY === 'YOUR_YOUTUBE_API_KEY'){ alert('Set your YouTube API key in code (YT_API_KEY).'); return; }
+  lastQuery = q;
+  feedTitle.innerText = `Results for: ${q}`;
+  resultsEl.innerHTML = `<div class="note">Searching ${q} ...</div>`;
+  loadMoreBtn.style.display = 'none';
+
+  const params = new URLSearchParams({
+    key: YT_API_KEY,
+    part: 'snippet',
+    q: q,
+    maxResults: 12,
+    type: 'video'
+  });
+  if(pageToken) params.set('pageToken', pageToken);
+
+  try{
+    const res = await fetch('https://www.googleapis.com/youtube/v3/search?' + params.toString());
+    const j = await res.json();
+    if(j.error){ console.error(j.error); resultsEl.innerHTML = `<div class="note">API error: ${j.error.message}</div>`; return; }
+    nextPageToken = j.nextPageToken || null;
+    renderResults(j.items, pageToken ? true:false);
+    if(nextPageToken) loadMoreBtn.style.display = 'inline-block';
+    else loadMoreBtn.style.display = 'none';
+  }catch(err){
+    console.error(err); resultsEl.innerHTML = `<div class="note">Network error</div>`;
+  }
+}
+
+/* ====== Render results ====== */
+function renderResults(items, append=false){
+  if(!append) resultsEl.innerHTML = '';
+  items.forEach(it=>{
+    const vid = it.id.videoId;
+    const title = it.snippet.title;
+    const channel = it.snippet.channelTitle;
+    const thumb = it.snippet.thumbnails.medium.url;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img class="thumb" src="${thumb}" loading="lazy">
+      <div class="meta">
+        <h3>${escapeHtml(title)}</h3>
+        <p>${escapeHtml(channel)}</p>
+        <div style="margin-top:8px"><button class="btn playNow" data-id="${vid}" data-title="${escapeAttr(title)}" data-thumb="${thumb}" data-channel="${escapeAttr(channel)}">Play</button></div>
+      </div>
+    `;
+    resultsEl.appendChild(card);
+  });
+
+  // attach handlers to play buttons
+  document.querySelectorAll('.playNow').forEach(b=>{
+    b.addEventListener('click', ()=> {
+      const id = b.dataset.id;
+      const title = b.dataset.title;
+      const thumb = b.dataset.thumb;
+      const channel = b.dataset.channel;
+      enqueueAndPlay({ id, title, thumb, channel });
+    });
+  });
+}
+
+/* ====== Simple queue & player control ====== */
+function enqueueAndPlay(track){
+  // add to queue
+  queue.push(track);
+  curIndex = queue.length - 1;
+  loadTrack(curIndex);
+}
+
+function loadTrack(index){
+  if(index < 0 || index >= queue.length) return;
+  const t = queue[index];
+  showMini(t);
+  if(!player){
+    // create YT iframe player
+    createPlayer(t.id);
+  } else {
+    player.loadVideoById(t.id);
+    // ensure visible
+    document.getElementById('mini').style.display = 'flex';
+    document.getElementById('miniPlay').innerText = 'Pause';
+  }
+}
+
+function createPlayer(videoId){
+  // load iframe api script if not loaded
+  if(typeof YT === 'undefined' || typeof YT.Player === 'undefined'){
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+    // wait for API to be ready: YT will call onYouTubeIframeAPIReady
+    window.onYouTubeIframeAPIReady = ()=> {
+      player = new YT.Player('ytPlayer', { // invisible iframe holder
+        height: '0', width:'0', videoId: videoId,
+        playerVars: { autoplay: 1, controls: 0, modestbranding:1, rel:0 },
+        events: { 'onReady': ()=> player.playVideo(), 'onStateChange': onPlayerStateChange }
+      });
+    };
+    // create holder element (hidden)
+    const h = document.createElement('div'); h.id = 'ytPlayer'; h.style.display='none'; document.body.appendChild(h);
+  } else {
+    player = new YT.Player('ytPlayer', { height:'0', width:'0', videoId: videoId, playerVars: { autoplay:1, controls:0 }, events:{ 'onStateChange': onPlayerStateChange }});
+  }
+  document.getElementById('mini').style.display = 'flex';
+  document.getElementById('miniPlay').innerText = 'Pause';
+}
+
+/* ====== player events and mini controls ====== */
+function onPlayerStateChange(evt){
+  const state = evt.data;
+  if(state === YT.PlayerState.PLAYING) {
+    startProgress();
+    document.getElementById('miniPlay').innerText = 'Pause';
+  } else if(state === YT.PlayerState.PAUSED) {
+    stopProgress();
+    document.getElementById('miniPlay').innerText = 'Play';
+  } else if(state === YT.PlayerState.ENDED) {
+    stopProgress();
+    // autoplay next in queue if exists
+    if(curIndex + 1 < queue.length){ curIndex++; loadTrack(curIndex); }
+    else { document.getElementById('miniPlay').innerText = 'Play'; }
+  }
+}
+
+document.getElementById('miniPlay').addEventListener('click', ()=>{
+  if(!player) return;
+  const st = player.getPlayerState();
+  if(st === YT.PlayerState.PLAYING) player.pauseVideo();
+  else player.playVideo();
+});
+document.getElementById('miniNext').addEventListener('click', ()=>{ if(curIndex + 1 < queue.length){ curIndex++; loadTrack(curIndex);} });
+document.getElementById('miniPrev').addEventListener('click', ()=>{ if(curIndex - 1 >= 0){ curIndex--; loadTrack(curIndex);} });
+
+function showMini(track){
+  document.getElementById('miniThumb').src = track.thumb;
+  document.getElementById('miniTitle').innerText = track.title;
+  document.getElementById('miniChannel').innerText = track.channel;
+  document.getElementById('mini').style.display = 'flex';
+}
+
+/* progress bar */
+function startProgress(){
+  stopProgress();
+  progressInterval = setInterval(()=>{
+    try{
+      const dur = player.getDuration();
+      const cur = player.getCurrentTime();
+      const pct = dur ? (cur/dur)*100 : 0;
+      document.getElementById('miniBar').style.width = pct + '%';
+    }catch(e){}
+  }, 400);
+}
+function stopProgress(){ clearInterval(progressInterval); }
+
+/* Escape HTML helpers */
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+/* ====== Initial default search (home feed) ====== */
+search(DEFAULT_QUERY);
+
+/* ====== Notes for usage ======
+ - Replace YT_API_KEY with your API key.
+ - Autoplay with sound might be blocked until user interacts with the page.
+ - You can extend: use videos.list to fetch viewCount/duration via video IDs (requires extra API calls).
+ - To show trending via videos.list?chart=mostPopular use separate endpoint (requires regionCode param).
+================================= */
+
 </script>
 </body>
 </html>
