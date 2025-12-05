@@ -1,341 +1,411 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Prime X Music — Search & Play</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg1:#030311; --panel: rgba(255,255,255,0.03);
-    --neon1:#00f0ff; --neon2:#7cff5f; --accent:#ff0077;
-  }
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#030311,#071026);color:#e6f7ff}
-  .wrap{max-width:1200px;margin:24px auto;padding:18px;display:grid;grid-template-columns:360px 1fr;gap:18px}
-  header{grid-column:1/3;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:48px;height:48px;border-radius:8px;background:linear-gradient(90deg,var(--neon1),var(--neon2));display:flex;align-items:center;justify-content:center;color:#001;font-weight:800}
-  h1{margin:0;font-size:18px}
-  .search{display:flex;gap:8px}
-  input.searchbox{padding:10px 12px;border-radius:10px;border:none;width:380px;background:#061428;color:#e6f7ff}
-  button.searchBtn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#002;cursor:pointer;font-weight:700}
+  <meta charset="UTF-8">
+  <title>Prime X Prem - Music Home (Hindi & English)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Orbitron', Arial, sans-serif;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, #091062 0%, #88009e 70%, #1a0945 100%);
+      min-height: 100vh;
+      margin: 0;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .header-bg {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(93deg, #ff40a1 34%, #1ff6ff 96%);
+      position: absolute; left: 0; top: 0; z-index: 0; filter: blur(35px) opacity(0.29);
+      pointer-events:none;
+    }
+    .wrapper {
+      max-width: 950px;
+      margin: 44px auto 0 auto;
+      background: rgba(12,18,56,0.93);
+      border-radius: 24px;
+      box-shadow: 0 0 60px #1ff6ffc0, 0 0 140px #ff40a180 inset;
+      border: 3px solid #1ff6ff;
+      padding: 44px 16px 28px 16px;
+      position: relative;
+      z-index: 2;
+      min-height: calc(97vh - 60px);
+    }
+    h1 {
+      color: #ff40a1;
+      font-size: 2.4rem;
+      text-shadow: 0 0 23px #ff40a1, 0 0 27px #1ff6ff;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
+    .desc {
+      text-align: center;
+      color: #1ff6ff;
+      font-size: 1.23em;
+      margin-bottom: 19px;
+      text-shadow: 0 0 14px #1ff6ff90;
+      letter-spacing: .7px;
+    }
+    .search-bar {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto 35px auto;
+      display: flex;
+      align-items: center;
+      background: #212868;
+      border-radius: 16px;
+      box-shadow: 0 0 22px #1ff6ff67;
+      padding: 7px 8px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 17px 18px;
+      outline: none;
+      border: none;
+      font-size: 1.18rem;
+      background: none;
+      color: #1ff6ff;
+      font-family: inherit;
+      border-radius: 11px;
+      box-shadow: 0 0 4px #1ff6ffc9;
+      font-weight: bold;
+    }
+    .search-bar button {
+      background: #1ff6ff;
+      color: #07041b;
+      font-weight: bold;
+      font-size: 1.18rem;
+      border-radius: 11px;
+      border: none;
+      padding: 13px 26px;
+      cursor: pointer;
+      box-shadow: 0 0 16px #1ff6ffc9;
+      margin-left: 8px;
+      transition: background .22s;
+    }
+    .search-bar button:hover {
+      background: #ff40a1; color: #fff;
+    }
+    .result-section {
+      margin-top: 11px;
+      color: #1ff6ff;
+      text-shadow: 0 0 6px #1ff6ff99;
+      font-size: 1.13em;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 28px;
+      margin-top: 6px;
+      margin-bottom: 13px;
+      z-index: 3;
+      position: relative;
+    }
+    .song-card {
+      background: rgba(34, 11, 55, 0.93);
+      border-radius: 12px;
+      box-shadow: 0 0 19px #1ff6ff30;
+      padding: 12px 13px 10px 13px;
+      transition: box-shadow .17s, transform .16s;
+      display: flex; flex-direction: column;
+      position: relative;
+      border: 2px solid #ff40a1;
+    }
+    .song-card:hover {
+      box-shadow: 0 0 44px #ff40a1bb, 0 0 17px #1ff6ff50;
+      transform: translateY(-6px) scale(1.06);
+      z-index: 3;
+      border-color: #1ff6ff;
+    }
+    .song-thumb {
+      border-radius: 9px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      margin-bottom: 10px;
+      box-shadow: 0 0 19px #ff40a130;
+      border: 1.5px solid #1ff6ff70;
+    }
+    .song-title {
+      color: #ff40a1;
+      font-weight: bold;
+      font-size: 1.13rem;
+      margin-bottom: 4px;
+      text-shadow: 0 0 12px #ff40a147;
+      letter-spacing:.7px;
+    }
+    .song-artist {
+      color: #1ff6ff;
+      font-size: 1.08em;
+      margin-bottom: 5px;
+      font-weight: bold;
+      letter-spacing:.7px;
+      text-shadow: 0 0 8px #1ff6ff36;
+    }
+    .song-meta {
+      font-size: .92em;
+      color: #b1efff;
+      margin-bottom: 4px;
+    }
+    .song-lang {
+      position: absolute;
+      right: 8px; top: 8px;
+      background: #1ff6ff;
+      color: #087;
+      font-size: .87em;
+      border-radius: 7px;
+      padding: 2px 9px;
+      font-weight: 700;
+      box-shadow: 0 0 12px #1ff6ff67;
+      letter-spacing:.3px;
+      opacity: .93;
+    }
+    .song-action {
+      margin-top: 9px;
+      text-align: right;
+    }
+    .song-play-btn {
+      background: #1ff6ff;
+      color: #1a0366;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      letter-spacing:.6px;
+      font-size: 1rem;
+      padding: 8px 17px;
+      cursor: pointer;
+      box-shadow: 0 0 14px #1ff6ff80, 0 0 7px #ff40a180 inset;
+      transition: background .2s;
+    }
+    .song-play-btn:hover { background: #ff40a1; color: #fff; }
+    @media (max-width: 680px) {
+      .wrapper{padding: 18px 2px;}
+      .result-grid {gap: 13px;}
+      h1{font-size:1.6rem;}
+    }
 
-  /* left menu / feed */
-  .panel{background:var(--panel);border-radius:12px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,0.6)}
-  .section-title{font-weight:700;color:var(--neon1);margin-bottom:10px}
-  .suggestions{display:flex;flex-direction:column;gap:10px}
-  .sug{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer}
-  .sug small{display:block;color:#a9cbd6;margin-top:4px}
-
-  /* results list */
-  .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-  .card{background:rgba(255,255,255,0.02);border-radius:10px;padding:10px;display:flex;gap:10px;align-items:flex-start}
-  .thumb{width:140px;height:84px;border-radius:8px;background:#111;flex-shrink:0;object-fit:cover}
-  .meta{flex:1}
-  .meta h3{margin:0;font-size:14px}
-  .meta p{margin:6px 0 0;color:#9fb4c0;font-size:12px}
-
-  /* player sticky bottom-mini */
-  .miniPlayer{
-    position:fixed;left:18px;right:18px;bottom:18px;height:86px;background:linear-gradient(90deg,rgba(0,0,0,0.55),rgba(2,8,20,0.6));border-radius:12px;display:flex;align-items:center;padding:10px;gap:12px;z-index:60;box-shadow:0 18px 40px rgba(0,0,0,0.6)
-  }
-  .miniThumb{width:68px;height:68px;border-radius:8px;object-fit:cover}
-  .miniInfo{flex:1}
-  .miniTitle{font-weight:700}
-  .miniControls{display:flex;gap:8px;align-items:center}
-  .btn{padding:8px 12px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#001;cursor:pointer;font-weight:700}
-
-  .note{font-size:12px;color:#9fb4c0}
-
-  /* modal new-user */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:80}
-  .mcard{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:10px;text-align:center;width:320px}
-  .mcard input{width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:#e6f7ff;margin-top:12px}
-
-  @media (max-width:980px){.wrap{grid-template-columns:1fr}.miniPlayer{left:10px;right:10px}}
-</style>
+    /* Neon Popup Styles (as before) */
+    .popup {
+      position: fixed;
+      top: 25px;
+      right: 40px;
+      z-index: 20;
+      background:rgba(11,15,55,0.98);
+      border: 2.5px solid #ff40a1;
+      box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
+      border-radius: 12px;
+      padding: 32px 22px 22px 22px;
+      min-width: 300px;
+      text-align: center;
+      animation: popupShow 0.6s cubic-bezier(.74,.12,.44,1.02) both;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+    @keyframes popupShow {
+      0%{opacity:0;transform:scale(0.3);}
+      100%{opacity:1;transform:scale(1);}
+    }
+    .popup-title {
+      font-size: 1.24rem;
+      color: #ff40a1;
+      margin-bottom: 9px;
+      text-shadow: 0 0 14px #ff40a1;
+      letter-spacing: 3px;
+    }
+    .popup-desc {
+      font-size: 0.98rem;
+      color: #1ff6ff;
+      margin-bottom: 15px;
+      text-shadow: 0 0 4px #1ff6ff;
+    }
+    .telegram-link {
+      display: inline-block;
+      background: #1ff6ff;
+      color: #1a0066;
+      padding: 10px 18px;
+      border-radius: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.06rem;
+      box-shadow: 0 0 16px #1ff6ffac, 0 0 10px #ff40a1b9 inset;
+      transition: background 0.18s;
+      border: 1.5px solid #fff;
+    }
+    .telegram-link:hover {
+      background: #ff40a1; color: #fff; box-shadow: 0 0 24px #ff40a1;
+    }
+    .popup-close {
+      font-size: 1.2rem;
+      border: none;
+      background: none;
+      color: #ff40a1;
+      position: absolute;
+      top: 14px; right: 17px;
+      cursor: pointer;
+      outline: none;
+      opacity: 0.88;
+      transition: color 0.2s, opacity .18s;
+    }
+    .popup-close:hover { color: #1ff6ff; opacity: 1; }
+  </style>
 </head>
 <body>
-
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <div class="logo">PX</div>
-      <div>
-        <h1>Prime X Music</h1>
-        <div class="note">Search • Play • Background-friendly</div>
-      </div>
-    </div>
-
-    <div class="search">
-      <input class="searchbox" id="q" placeholder="Search songs, artists, albums..." />
-      <button class="searchBtn" id="searchBtn">Search</button>
-    </div>
-  </header>
-
-  <!-- Left column: categories / quick feed -->
-  <aside class="panel">
-    <div class="section-title">Quick Picks</div>
-    <div class="suggestions">
-      <div class="sug" data-q="Top Hits 2024">Top Hits 2024 <small>Latest trending songs</small></div>
-      <div class="sug" data-q="Bollywood hits">Bollywood hits <small>Popular Indian songs</small></div>
-      <div class="sug" data-q="Lo-fi chill beats">Lo-fi chill beats <small>Study / Relax</small></div>
-      <div class="sug" data-q="Party mix">Party mix <small>Dance & EDM</small></div>
-    </div>
-
-    <div style="height:18px"></div>
-    <div class="section-title">About</div>
-    <div class="note">Join our Telegram: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></div>
-    <div style="height:12px"></div>
-    <div class="section-title">Tips</div>
-    <div class="note">Press Play once to allow background playback. Browser autoplay rules may require a gesture.</div>
-  </aside>
-
-  <!-- Main results area -->
-  <main>
-    <div id="resultsContainer" class="panel">
-      <div id="feedTitle" class="section-title">Trending Music</div>
-      <div id="results" class="results"></div>
-      <div id="loadMoreWrap" style="text-align:center;margin-top:12px"><button id="loadMore" class="btn" style="display:none">Load more</button></div>
-    </div>
-  </main>
-</div>
-
-<!-- mini player -->
-<div id="mini" class="miniPlayer" style="display:none">
-  <img id="miniThumb" class="miniThumb" src="" alt="thumb">
-  <div class="miniInfo">
-    <div id="miniTitle" class="miniTitle">—</div>
-    <div id="miniChannel" class="note">Prime X</div>
-    <div id="miniProgress" style="height:6px;background:rgba(255,255,255,0.04);border-radius:6px;margin-top:8px;overflow:hidden"><div id="miniBar" style="height:100%;width:0;background:linear-gradient(90deg,var(--neon1),var(--neon2));"></div></div>
+<div class="header-bg" aria-hidden="true"></div>
+<div class="wrapper">
+  <h1>🎶 Prime X Prem - Hindi & English Music</h1>
+  <div class="desc">
+    Home Page: Enjoy trending English & Hindi songs!<br>
+    Search for your favourite music below.
   </div>
-  <div class="miniControls">
-    <button id="miniPrev" class="btn">Prev</button>
-    <button id="miniPlay" class="btn">Play</button>
-    <button id="miniNext" class="btn">Next</button>
+  <div class="search-bar">
+    <input type="text" id="musicSearch" placeholder="Search by song, artist, or language">
+    <button onclick="triggerSearch()">Search</button>
   </div>
+  <div class="result-section" id="autoFetchStatus">Trending Hindi & English Songs</div>
+  <div class="result-grid" id="resultGrid"></div>
 </div>
-
-<!-- new user modal -->
-<div id="modal" class="modal" style="display:none">
-  <div class="mcard">
-    <h3 style="color:var(--neon1)">Welcome to Prime X Music</h3>
-    <p class="note">Enter your name to continue and join our Telegram for latest campaigns.</p>
-    <input id="uname" placeholder="Enter your name (optional)" />
-    <div style="margin-top:12px">
-      <button id="joinBtn" class="btn">Continue</button>
-    </div>
-    <div style="margin-top:10px" class="note">Join Telegram: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></div>
-  </div>
+<!-- Neon Popup for New User -->
+<div class="popup" id="userPopup">
+  <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
+  <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
+  <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
+  <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
 </div>
-
-<!-- YouTube IFrame API and script -->
 <script>
-/* ====== CONFIGURE HERE ====== */
-const YT_API_KEY = 'YOUR_YOUTUBE_API_KEY'; // <-- set your YouTube Data API v3 key
-const DEFAULT_QUERY = 'Top Hits 2024';     // home feed query
-let nextPageToken = null;
-let lastQuery = DEFAULT_QUERY;
+setTimeout(closePopup, 7000);
+function closePopup() { var popup = document.getElementById('userPopup'); if(popup) popup.style.display = 'none'; }
 
-/* ====== Helpers: DOM ====== */
-const resultsEl = document.getElementById('results');
-const feedTitle = document.getElementById('feedTitle');
-const loadMoreBtn = document.getElementById('loadMore');
+const hindiSongs = [
+  {
+    title: "Apna Bana Le - Bhediya",
+    artist: "Arijit Singh",
+    thumb: "https://i.ytimg.com/vi/dlA4pHCPm6k/mqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=dlA4pHCPm6k",
+    duration: "3:18",
+    lang: "Hindi"
+  },
+  {
+    title: "Heeriye - Jasleen Royal ft Arijit Singh",
+    artist: "Jasleen Royal, Arijit Singh",
+    thumb: "https://i.ytimg.com/vi/1G2fJqk76aE/mqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=1G2fJqk76aE",
+    duration: "3:20",
+    lang: "Hindi"
+  },
+  {
+    title: "Chaleya - Jawan",
+    artist: "Arijit Singh, Shilpa Rao",
+    thumb: "https://i.ytimg.com/vi/KW_9PSv6nDg/mqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=KW_9PSv6nDg",
+    duration: "3:28",
+    lang: "Hindi"
+  },
+  {
+    title: "Kesariya - Brahmāstra",
+    artist: "Arijit Singh",
+    thumb: "https://i.ytimg.com/vi/BddP6PYo2gs/mqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=BddP6PYo2gs",
+    duration: "2:52",
+    lang: "Hindi"
+  },
+  {
+    title: "Tum Hi Ho - Aashiqui 2",
+    artist: "Arijit Singh",
+    thumb: "https://i.ytimg.com/vi/Umqb9KENgmk/mqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=Umqb9KENgmk",
+    duration: "4:22",
+    lang: "Hindi"
+  }
+];
 
-/* ====== Simple playlist state ====== */
-let queue = [];
-let curIndex = -1;
-let player; // YT player instance
-let progressInterval;
+const englishSongs = [
+  {
+    title:"Blinding Lights",
+    artist:"The Weeknd",
+    thumb:"https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=fHI8X4OXluQ",
+    duration:"3:21",
+    lang:"English"
+  },
+  {
+    title:"Shape of You",
+    artist:"Ed Sheeran",
+    thumb:"https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=JGwWNGJdvx8",
+    duration:"4:24",
+    lang:"English"
+  },
+  {
+    title:"Closer",
+    artist:"The Chainsmokers ft. Halsey",
+    thumb:"https://i.ytimg.com/vi/PT2_F-1esPk/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=PT2_F-1esPk",
+    duration:"4:22",
+    lang:"English"
+  },
+  {
+    title:"Senorita",
+    artist:"Shawn Mendes, Camila Cabello",
+    thumb:"https://i.ytimg.com/vi/Pkh8UtuejGw/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=Pkh8UtuejGw",
+    duration:"3:11",
+    lang:"English"
+  },
+  {
+    title:"Faded",
+    artist:"Alan Walker",
+    thumb:"https://i.ytimg.com/vi/60ItHLz5WEA/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=60ItHLz5WEA",
+    duration:"3:32",
+    lang:"English"
+  }
+];
 
-/* ====== Initialize UI & handlers ====== */
-document.getElementById('searchBtn').addEventListener('click', ()=> search(document.getElementById('q').value.trim() || DEFAULT_QUERY));
-document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('searchBtn').click(); });
-document.querySelectorAll('.sug').forEach(s=> s.addEventListener('click', ()=>{ search(s.dataset.q); document.getElementById('q').value = s.dataset.q;}));
-loadMoreBtn.addEventListener('click', ()=> search(lastQuery, nextPageToken));
-
-/* ====== New-user modal logic ====== */
-if(!localStorage.getItem('px_user')) {
-  document.getElementById('modal').style.display = 'flex';
+function renderResults(songs) {
+  document.getElementById('resultGrid').innerHTML =
+    songs.map(song =>
+      `<div class="song-card">
+        <img class="song-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
+        <span class="song-lang">${song.lang}</span>
+        <div class="song-title">${song.title}</div>
+        <div class="song-artist">${song.artist}</div>
+        <div class="song-meta">${song.duration}</div>
+        <div class="song-action">
+          <a href="${song.url}" target="_blank">
+            <button class="song-play-btn">Play</button>
+          </a>
+        </div>
+      </div>`
+    ).join('');
 }
-document.getElementById('joinBtn').addEventListener('click', ()=>{
-  const name = document.getElementById('uname').value.trim();
-  if(name) localStorage.setItem('px_user', name);
-  else localStorage.setItem('px_user', 'Guest');
-  document.getElementById('modal').style.display = 'none';
-  alert('Welcome! Join Telegram for updates: https://t.me/primexprem');
+// On load: Hindi & English trending
+function showTrending() {
+  renderResults([...hindiSongs, ...englishSongs]);
+  document.getElementById('autoFetchStatus').textContent = "Trending Hindi & English Songs";
+}
+showTrending();
+
+function triggerSearch() {
+  const val = document.getElementById('musicSearch').value.trim().toLowerCase();
+  if(!val) { showTrending(); return; }
+  const filtered = [...hindiSongs, ...englishSongs].filter(song =>
+    song.title.toLowerCase().includes(val) ||
+    song.artist.toLowerCase().includes(val) ||
+    song.lang.toLowerCase().includes(val)
+  );
+  renderResults(filtered.length ? filtered : []);
+  document.getElementById('autoFetchStatus').textContent = filtered.length
+    ? "Your Search Results"
+    : "No results found";
+}
+document.getElementById('musicSearch').addEventListener('keyup', function(e){
+  if(e.key==='Enter')triggerSearch();
 });
-
-/* ====== YouTube Data API search ====== */
-async function search(q, pageToken=null){
-  if(!YT_API_KEY || YT_API_KEY === 'YOUR_YOUTUBE_API_KEY'){ alert('Set your YouTube API key in code (YT_API_KEY).'); return; }
-  lastQuery = q;
-  feedTitle.innerText = `Results for: ${q}`;
-  resultsEl.innerHTML = `<div class="note">Searching ${q} ...</div>`;
-  loadMoreBtn.style.display = 'none';
-
-  const params = new URLSearchParams({
-    key: YT_API_KEY,
-    part: 'snippet',
-    q: q,
-    maxResults: 12,
-    type: 'video'
-  });
-  if(pageToken) params.set('pageToken', pageToken);
-
-  try{
-    const res = await fetch('https://www.googleapis.com/youtube/v3/search?' + params.toString());
-    const j = await res.json();
-    if(j.error){ console.error(j.error); resultsEl.innerHTML = `<div class="note">API error: ${j.error.message}</div>`; return; }
-    nextPageToken = j.nextPageToken || null;
-    renderResults(j.items, pageToken ? true:false);
-    if(nextPageToken) loadMoreBtn.style.display = 'inline-block';
-    else loadMoreBtn.style.display = 'none';
-  }catch(err){
-    console.error(err); resultsEl.innerHTML = `<div class="note">Network error</div>`;
-  }
-}
-
-/* ====== Render results ====== */
-function renderResults(items, append=false){
-  if(!append) resultsEl.innerHTML = '';
-  items.forEach(it=>{
-    const vid = it.id.videoId;
-    const title = it.snippet.title;
-    const channel = it.snippet.channelTitle;
-    const thumb = it.snippet.thumbnails.medium.url;
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img class="thumb" src="${thumb}" loading="lazy">
-      <div class="meta">
-        <h3>${escapeHtml(title)}</h3>
-        <p>${escapeHtml(channel)}</p>
-        <div style="margin-top:8px"><button class="btn playNow" data-id="${vid}" data-title="${escapeAttr(title)}" data-thumb="${thumb}" data-channel="${escapeAttr(channel)}">Play</button></div>
-      </div>
-    `;
-    resultsEl.appendChild(card);
-  });
-
-  // attach handlers to play buttons
-  document.querySelectorAll('.playNow').forEach(b=>{
-    b.addEventListener('click', ()=> {
-      const id = b.dataset.id;
-      const title = b.dataset.title;
-      const thumb = b.dataset.thumb;
-      const channel = b.dataset.channel;
-      enqueueAndPlay({ id, title, thumb, channel });
-    });
-  });
-}
-
-/* ====== Simple queue & player control ====== */
-function enqueueAndPlay(track){
-  // add to queue
-  queue.push(track);
-  curIndex = queue.length - 1;
-  loadTrack(curIndex);
-}
-
-function loadTrack(index){
-  if(index < 0 || index >= queue.length) return;
-  const t = queue[index];
-  showMini(t);
-  if(!player){
-    // create YT iframe player
-    createPlayer(t.id);
-  } else {
-    player.loadVideoById(t.id);
-    // ensure visible
-    document.getElementById('mini').style.display = 'flex';
-    document.getElementById('miniPlay').innerText = 'Pause';
-  }
-}
-
-function createPlayer(videoId){
-  // load iframe api script if not loaded
-  if(typeof YT === 'undefined' || typeof YT.Player === 'undefined'){
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-    // wait for API to be ready: YT will call onYouTubeIframeAPIReady
-    window.onYouTubeIframeAPIReady = ()=> {
-      player = new YT.Player('ytPlayer', { // invisible iframe holder
-        height: '0', width:'0', videoId: videoId,
-        playerVars: { autoplay: 1, controls: 0, modestbranding:1, rel:0 },
-        events: { 'onReady': ()=> player.playVideo(), 'onStateChange': onPlayerStateChange }
-      });
-    };
-    // create holder element (hidden)
-    const h = document.createElement('div'); h.id = 'ytPlayer'; h.style.display='none'; document.body.appendChild(h);
-  } else {
-    player = new YT.Player('ytPlayer', { height:'0', width:'0', videoId: videoId, playerVars: { autoplay:1, controls:0 }, events:{ 'onStateChange': onPlayerStateChange }});
-  }
-  document.getElementById('mini').style.display = 'flex';
-  document.getElementById('miniPlay').innerText = 'Pause';
-}
-
-/* ====== player events and mini controls ====== */
-function onPlayerStateChange(evt){
-  const state = evt.data;
-  if(state === YT.PlayerState.PLAYING) {
-    startProgress();
-    document.getElementById('miniPlay').innerText = 'Pause';
-  } else if(state === YT.PlayerState.PAUSED) {
-    stopProgress();
-    document.getElementById('miniPlay').innerText = 'Play';
-  } else if(state === YT.PlayerState.ENDED) {
-    stopProgress();
-    // autoplay next in queue if exists
-    if(curIndex + 1 < queue.length){ curIndex++; loadTrack(curIndex); }
-    else { document.getElementById('miniPlay').innerText = 'Play'; }
-  }
-}
-
-document.getElementById('miniPlay').addEventListener('click', ()=>{
-  if(!player) return;
-  const st = player.getPlayerState();
-  if(st === YT.PlayerState.PLAYING) player.pauseVideo();
-  else player.playVideo();
-});
-document.getElementById('miniNext').addEventListener('click', ()=>{ if(curIndex + 1 < queue.length){ curIndex++; loadTrack(curIndex);} });
-document.getElementById('miniPrev').addEventListener('click', ()=>{ if(curIndex - 1 >= 0){ curIndex--; loadTrack(curIndex);} });
-
-function showMini(track){
-  document.getElementById('miniThumb').src = track.thumb;
-  document.getElementById('miniTitle').innerText = track.title;
-  document.getElementById('miniChannel').innerText = track.channel;
-  document.getElementById('mini').style.display = 'flex';
-}
-
-/* progress bar */
-function startProgress(){
-  stopProgress();
-  progressInterval = setInterval(()=>{
-    try{
-      const dur = player.getDuration();
-      const cur = player.getCurrentTime();
-      const pct = dur ? (cur/dur)*100 : 0;
-      document.getElementById('miniBar').style.width = pct + '%';
-    }catch(e){}
-  }, 400);
-}
-function stopProgress(){ clearInterval(progressInterval); }
-
-/* Escape HTML helpers */
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
-function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
-
-/* ====== Initial default search (home feed) ====== */
-search(DEFAULT_QUERY);
-
-/* ====== Notes for usage ======
- - Replace YT_API_KEY with your API key.
- - Autoplay with sound might be blocked until user interacts with the page.
- - You can extend: use videos.list to fetch viewCount/duration via video IDs (requires extra API calls).
- - To show trending via videos.list?chart=mostPopular use separate endpoint (requires regionCode param).
-================================= */
-
 </script>
 </body>
 </html>
