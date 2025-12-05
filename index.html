@@ -6,204 +6,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Orbitron', Arial, sans-serif;
-      background: radial-gradient(ellipse at 50% 30%, #091062 0%, #88009e 70%, #1a0945 100%);
-      min-height: 100vh;
-      margin: 0;
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .header-bg {
-      width: 100%;
-      height: 220px;
-      background: linear-gradient(93deg, #ff40a1 34%, #1ff6ff 96%);
-      position: absolute; left: 0; top: 0; z-index: 0; filter: blur(35px) opacity(0.29);
-      pointer-events:none;
-    }
-    .wrapper {
-      max-width: 900px;
-      margin: 44px auto 0 auto;
-      background: rgba(12,18,56,0.93);
-      border-radius: 24px;
-      box-shadow: 0 0 60px #1ff6ffc0, 0 0 140px #ff40a180 inset;
-      border: 3px solid #1ff6ff;
-      padding: 44px 16px 28px 16px;
-      position: relative;
-      z-index: 2;
-      min-height: calc(97vh - 60px);
-    }
-    h1 {
-      color: #ff40a1;
-      font-size: 2.4rem;
-      text-shadow: 0 0 23px #ff40a1, 0 0 27px #1ff6ff;
-      margin-bottom: 10px;
-      text-align: center;
-      letter-spacing: 3px;
-      font-weight: bold;
-    }
-    .desc {
-      text-align: center;
-      color: #1ff6ff;
-      font-size: 1.23em;
-      margin-bottom: 19px;
-      text-shadow: 0 0 14px #1ff6ff90;
-      letter-spacing: .7px;
-    }
-    .search-bar {
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto 35px auto;
-      display: flex;
-      align-items: center;
-      background: #212868;
-      border-radius: 16px;
-      box-shadow: 0 0 22px #1ff6ff67;
-      padding: 7px 8px;
-      gap: 12px;
-    }
-    .search-bar input {
-      flex: 1;
-      padding: 17px 18px;
-      outline: none;
-      border: none;
-      font-size: 1.18rem;
-      background: none;
-      color: #1ff6ff;
-      font-family: inherit;
-      border-radius: 11px;
-      box-shadow: 0 0 4px #1ff6ffc9;
-      font-weight: bold;
-    }
-    .search-bar button {
-      background: #1ff6ff;
-      color: #07041b;
-      font-weight: bold;
-      font-size: 1.18rem;
-      border-radius: 11px;
-      border: none;
-      padding: 13px 22px;
-      cursor: pointer;
-      box-shadow: 0 0 16px #1ff6ffc9;
-      transition: background .22s;
-      margin-left:0;
-    }
-    .search-bar button.refresh-btn {
-      background: #ff40a1;
-      color: #fff;
-      margin-left: 0;
-      box-shadow: 0 0 16px #ff40a1c9;
-    }
-    .search-bar button:hover {
-      background: #ff40a1; color: #fff;
-    }
-    .search-bar button.refresh-btn:hover {
-      background: #1ff6ff; color: #07041b;
-    }
-    .result-section {
-      margin-top: 11px;
-      color: #1ff6ff;
-      text-shadow: 0 0 6px #1ff6ff99;
-      font-size: 1.13em;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 28px;
-      margin-top: 6px;
-      margin-bottom: 13px;
-      z-index: 3;
-      position: relative;
-    }
-    .song-card {
-      background: rgba(34, 11, 55, 0.93);
-      border-radius: 12px;
-      box-shadow: 0 0 19px #1ff6ff30;
-      padding: 12px 13px 10px 13px;
-      transition: box-shadow .17s, transform .16s;
-      display: flex; flex-direction: column;
-      position: relative;
-      border: 2px solid #ff40a1;
-    }
-    .song-card:hover {
-      box-shadow: 0 0 44px #ff40a1bb, 0 0 17px #1ff6ff50;
-      transform: translateY(-6px) scale(1.06);
-      z-index: 3;
-      border-color: #1ff6ff;
-    }
-    .song-thumb {
-      border-radius: 9px;
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      margin-bottom: 10px;
-      box-shadow: 0 0 19px #ff40a130;
-      border: 1.5px solid #1ff6ff70;
-      background: #1a0945;
-    }
-    .song-title {
-      color: #ff40a1;
-      font-weight: bold;
-      font-size: 1.13rem;
-      margin-bottom: 4px;
-      text-shadow: 0 0 12px #ff40a147;
-      letter-spacing:.7px;
-    }
-    .song-artist {
-      color: #1ff6ff;
-      font-size: 1.08em;
-      margin-bottom: 5px;
-      font-weight: bold;
-      letter-spacing:.7px;
-      text-shadow: 0 0 8px #1ff6ff36;
-    }
-    .song-meta {
-      font-size: .92em;
-      color: #b1efff;
-      margin-bottom: 4px;
-    }
-    .song-lang {
-      position: absolute;
-      right: 8px; top: 8px;
-      background: #1ff6ff;
-      color: #087;
-      font-size: .87em;
-      border-radius: 7px;
-      padding: 2px 9px;
-      font-weight: 700;
-      box-shadow: 0 0 12px #1ff6ff67;
-      letter-spacing:.3px;
-      opacity: .93;
-    }
-    .song-action {
-      margin-top: 9px;
-      text-align: right;
-    }
-    .song-play-btn {
-      background: #1ff6ff;
-      color: #1a0366;
-      border-radius: 10px;
-      border: none;
-      font-weight: bold;
-      letter-spacing:.6px;
-      font-size: 1rem;
-      padding: 8px 17px;
-      cursor: pointer;
-      box-shadow: 0 0 14px #1ff6ff80, 0 0 7px #ff40a180 inset;
-      transition: background .2s;
-    }
+    body { font-family: 'Orbitron', Arial, sans-serif; background: radial-gradient(ellipse at 50% 30%, #091062 0%, #88009e 70%, #1a0945 100%); min-height: 100vh; margin: 0; color: #fff; }
+    .wrapper { max-width: 900px; margin: 44px auto 0; background: rgba(12,18,56,0.93); border-radius: 24px; box-shadow: 0 0 60px #1ff6ffc0, 0 0 140px #ff40a180 inset; border: 3px solid #1ff6ff; padding: 44px 16px 28px 16px; position: relative; min-height: calc(97vh - 60px); }
+    h1 { color: #ff40a1; font-size: 2.4rem; text-shadow: 0 0 23px #ff40a1, 0 0 27px #1ff6ff; margin-bottom: 10px; text-align: center; letter-spacing: 3px; font-weight: bold; }
+    .desc { text-align: center; color: #1ff6ff; font-size: 1.23em; margin-bottom: 19px; text-shadow: 0 0 14px #1ff6ff90; }
+    .search-bar { width: 100%; max-width: 540px; margin: 0 auto 35px; display: flex; align-items: center; background: #212868; border-radius: 16px; box-shadow: 0 0 22px #1ff6ff67; padding: 7px 8px; gap: 12px; }
+    .search-bar input { flex: 1; padding: 17px 18px; outline: none; border: none; font-size: 1.18rem; background: none; color: #1ff6ff; border-radius: 11px; font-weight: bold; }
+    .search-bar button { background: #1ff6ff; color: #07041b; font-weight: bold; font-size: 1.18rem; border-radius: 11px; border: none; padding: 13px 22px; cursor: pointer; box-shadow: 0 0 16px #1ff6ffc9; transition: background .22s; }
+    .search-bar button.refresh-btn { background: #ff40a1; color: #fff; box-shadow: 0 0 16px #ff40a1c9; }
+    .result-section { margin-top: 11px; color: #1ff6ff; text-shadow: 0 0 6px #1ff6ff99; font-size: 1.13em; text-align: center; margin-bottom: 14px; }
+    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 28px; margin-top: 6px; margin-bottom: 13px; }
+    .song-card { background: rgba(34, 11, 55, 0.93); border-radius: 12px; box-shadow: 0 0 19px #1ff6ff30; padding: 12px 13px 10px; display: flex; flex-direction: column; position: relative; border: 2px solid #ff40a1; }
+    .song-card:hover { box-shadow: 0 0 44px #ff40a1bb, 0 0 17px #1ff6ff50; transform: translateY(-6px) scale(1.06); border-color: #1ff6ff; }
+    .song-thumb { border-radius: 9px; width: 100%; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 10px; box-shadow: 0 0 19px #ff40a130; border: 1.5px solid #1ff6ff70; background: #1a0945; }
+    .song-title { color: #ff40a1; font-weight: bold; font-size: 1.13rem; margin-bottom: 4px; text-shadow: 0 0 12px #ff40a147; }
+    .song-artist { color: #1ff6ff; font-size: 1.08em; margin-bottom: 5px; font-weight: bold; text-shadow: 0 0 8px #1ff6ff36; }
+    .song-meta { font-size: .92em; color: #b1efff; margin-bottom: 4px; }
+    .song-lang { position: absolute; right: 8px; top: 8px; background: #1ff6ff; color: #087; font-size: .87em; border-radius: 7px; padding: 2px 9px; font-weight: 700; box-shadow: 0 0 12px #1ff6ff67; opacity: .93; }
+    .song-action { margin-top: 9px; text-align: right; }
+    .song-play-btn { background: #1ff6ff; color: #1a0366; border-radius: 10px; border: none; font-weight: bold; font-size: 1rem; padding: 8px 17px; cursor: pointer; box-shadow: 0 0 14px #1ff6ff80, 0 0 7px #ff40a180 inset; transition: background .2s; }
     .song-play-btn:hover { background: #ff40a1; color: #fff; }
-    @media (max-width: 680px) {
-      .wrapper{padding: 16px 2px;}
-      .result-grid {gap: 13px;}
-      h1{font-size:1.6rem;}
-    }
+    @media (max-width: 680px) { .wrapper{padding: 16px 2px;} .result-grid {gap: 13px;} h1{font-size:1.6rem;} }
   </style>
 </head>
 <body>
-<div class="header-bg" aria-hidden="true"></div>
 <div class="wrapper">
   <h1>🎶 Prime X Prem - Hindi & English Music</h1>
   <div class="desc">
@@ -220,98 +46,22 @@
 </div>
 <script>
 const hindiSongs = [
-  {
-    title: "Apna Bana Le - Bhediya",
-    artist: "Arijit Singh",
-    thumb: "https://i.ytimg.com/vi/dlA4pHCPm6k/mqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dlA4pHCPm6k",
-    duration: "3:18",
-    lang: "Hindi"
-  },
-  {
-    title: "Heeriye - Jasleen Royal ft Arijit Singh",
-    artist: "Jasleen Royal, Arijit Singh",
-    thumb: "https://i.ytimg.com/vi/1G2fJqk76aE/mqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=1G2fJqk76aE",
-    duration: "3:20",
-    lang: "Hindi"
-  },
-  {
-    title: "Chaleya - Jawan",
-    artist: "Arijit Singh, Shilpa Rao",
-    thumb: "https://i.ytimg.com/vi/KW_9PSv6nDg/mqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=KW_9PSv6nDg",
-    duration: "3:28",
-    lang: "Hindi"
-  },
-  {
-    title: "Kesariya - Brahmāstra",
-    artist: "Arijit Singh",
-    thumb: "https://i.ytimg.com/vi/BddP6PYo2gs/mqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=BddP6PYo2gs",
-    duration: "2:52",
-    lang: "Hindi"
-  },
-  {
-    title: "Tum Hi Ho - Aashiqui 2",
-    artist: "Arijit Singh",
-    thumb: "https://i.ytimg.com/vi/Umqb9KENgmk/mqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=Umqb9KENgmk",
-    duration: "4:22",
-    lang: "Hindi"
-  }
+  { title: "Apna Bana Le - Bhediya", artist: "Arijit Singh", thumb:"https://i.ytimg.com/vi/dlA4pHCPm6k/mqdefault.jpg", url:"https://www.youtube.com/watch?v=dlA4pHCPm6k", duration: "3:18", lang: "Hindi" },
+  { title: "Heeriye - Jasleen Royal ft Arijit Singh", artist: "Jasleen Royal, Arijit Singh", thumb:"https://i.ytimg.com/vi/1G2fJqk76aE/mqdefault.jpg", url:"https://www.youtube.com/watch?v=1G2fJqk76aE", duration: "3:20", lang: "Hindi" },
+  { title: "Chaleya - Jawan", artist: "Arijit Singh, Shilpa Rao", thumb:"https://i.ytimg.com/vi/KW_9PSv6nDg/mqdefault.jpg", url:"https://www.youtube.com/watch?v=KW_9PSv6nDg", duration: "3:28", lang: "Hindi" },
+  { title: "Kesariya - Brahmāstra", artist: "Arijit Singh", thumb:"https://i.ytimg.com/vi/BddP6PYo2gs/mqdefault.jpg", url:"https://www.youtube.com/watch?v=BddP6PYo2gs", duration: "2:52", lang: "Hindi" },
+  { title: "Tum Hi Ho - Aashiqui 2", artist: "Arijit Singh", thumb:"https://i.ytimg.com/vi/Umqb9KENgmk/mqdefault.jpg", url:"https://www.youtube.com/watch?v=Umqb9KENgmk", duration: "4:22", lang: "Hindi" }
 ];
 const englishSongs = [
-  {
-    title:"Blinding Lights",
-    artist:"The Weeknd",
-    thumb:"https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=fHI8X4OXluQ",
-    duration:"3:21",
-    lang:"English"
-  },
-  {
-    title:"Shape of You",
-    artist:"Ed Sheeran",
-    thumb:"https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=JGwWNGJdvx8",
-    duration:"4:24",
-    lang:"English"
-  },
-  {
-    title:"Closer",
-    artist:"The Chainsmokers ft. Halsey",
-    thumb:"https://i.ytimg.com/vi/PT2_F-1esPk/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=PT2_F-1esPk",
-    duration:"4:22",
-    lang:"English"
-  },
-  {
-    title:"Senorita",
-    artist:"Shawn Mendes, Camila Cabello",
-    thumb:"https://i.ytimg.com/vi/Pkh8UtuejGw/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=Pkh8UtuejGw",
-    duration:"3:11",
-    lang:"English"
-  },
-  {
-    title:"Faded",
-    artist:"Alan Walker",
-    thumb:"https://i.ytimg.com/vi/60ItHLz5WEA/mqdefault.jpg",
-    url:"https://www.youtube.com/watch?v=60ItHLz5WEA",
-    duration:"3:32",
-    lang:"English"
-  }
+  { title: "Blinding Lights", artist: "The Weeknd", thumb:"https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg", url:"https://www.youtube.com/watch?v=fHI8X4OXluQ", duration:"3:21", lang:"English" },
+  { title: "Shape of You", artist: "Ed Sheeran", thumb:"https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg", url:"https://www.youtube.com/watch?v=JGwWNGJdvx8", duration:"4:24", lang:"English" },
+  { title: "Closer", artist: "The Chainsmokers ft. Halsey", thumb:"https://i.ytimg.com/vi/PT2_F-1esPk/mqdefault.jpg", url:"https://www.youtube.com/watch?v=PT2_F-1esPk", duration:"4:22", lang:"English" },
+  { title: "Senorita", artist: "Shawn Mendes, Camila Cabello", thumb:"https://i.ytimg.com/vi/Pkh8UtuejGw/mqdefault.jpg", url:"https://www.youtube.com/watch?v=Pkh8UtuejGw", duration:"3:11", lang:"English" },
+  { title: "Faded", artist: "Alan Walker", thumb:"https://i.ytimg.com/vi/60ItHLz5WEA/mqdefault.jpg", url:"https://www.youtube.com/watch?v=60ItHLz5WEA", duration:"3:32", lang:"English" }
 ];
 
 function renderResults(songs) {
   const grid = document.getElementById('resultGrid');
-  if(!songs.length) {
-    // fallback: show trending if nothing found
-    showTrending();
-    document.getElementById('autoFetchStatus').textContent = "No results. Showing Trending Hindi & English Songs";
-    return;
-  }
   grid.innerHTML = songs.map(song =>
     `<div class="song-card">
       <img class="song-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
@@ -335,14 +85,13 @@ function refreshTrending() {
   document.getElementById('musicSearch').value = "";
   showTrending();
 }
-// Always show trending on load & on refresh
 window.addEventListener("load", showTrending);
 
 function triggerSearch() {
   const val = document.getElementById('musicSearch').value.trim().toLowerCase();
   if(!val) { showTrending(); return; }
-  const allSongs = [...hindiSongs, ...englishSongs];
-  const filtered = allSongs.filter(song =>
+  const songs = [...hindiSongs, ...englishSongs];
+  const filtered = songs.filter(song =>
     song.title.toLowerCase().includes(val) ||
     song.artist.toLowerCase().includes(val) ||
     song.lang.toLowerCase().includes(val)
