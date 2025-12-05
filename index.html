@@ -1,0 +1,144 @@
+<!-- PrimeXMusic Blogger - Modern Theme + Download + Welcome Popup (No Background Music) -->
+<style>
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
+  color: #fff;
+}
+#primeXMusic { max-width:1100px; margin:auto; padding:20px; }
+h1 { text-align:center; margin-bottom:20px; color:#00e5ff; }
+#searchForm input { padding:10px; width:60%; border-radius:6px 0 0 6px; border:none; }
+#searchForm button { padding:10px 15px; border:none; background:#00e5ff; color:#000; border-radius:0 6px 6px 0; cursor:pointer; }
+#music-container { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
+.song-card { width:200px; cursor:pointer; background:#111; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.6); transition:0.3s; }
+.song-card:hover { transform:scale(1.05); }
+.song-card img { width:100%; display:block; }
+.song-card p { text-align:center; padding:5px; font-size:14px; }
+
+/* Modal Player */
+#playerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; z-index:1000; }
+#playerModal iframe { width:100%; height:450px; border:none; border-radius:8px; }
+#playerModal button { position:absolute; top:5px; right:10px; font-size:20px; border:none; background:none; color:#fff; cursor:pointer; }
+.download-btn { background:#00ffae; color:#000; padding:5px 8px; border-radius:4px; text-align:center; display:block; margin:5px auto 10px auto; font-size:12px; text-decoration:none; }
+
+/* Welcome Popup */
+#welcomePopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items:center; justify-content:center; z-index:2000; }
+#welcomePopup .popup-content { background:#111; padding:30px; border-radius:10px; text-align:center; max-width:400px; color:#fff; }
+#welcomePopup .popup-content h2 { color:#00e5ff; margin-bottom:15px; }
+#welcomePopup .popup-content a { display:inline-block; padding:10px 20px; background:#00ffae; color:#000; border-radius:6px; text-decoration:none; margin-top:10px; font-weight:bold; }
+#welcomePopup .popup-content button { margin-top:15px; padding:8px 15px; background:#007bff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+</style>
+
+<div id="primeXMusic">
+  <h1>PrimeXMusic</h1>
+
+  <!-- Search -->
+  <form id="searchForm">
+    <input id="searchInput" type="text" placeholder="Search songs...">
+    <button type="submit">Search</button>
+  </form>
+
+  <!-- Song Grid -->
+  <div id="music-container"></div>
+</div>
+
+<!-- Player Modal -->
+<div id="playerModal">
+  <button id="closeModal">✕</button>
+  <iframe id="player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <a id="downloadLink" class="download-btn" target="_blank">Download MP3</a>
+</div>
+
+<!-- Welcome Popup -->
+<div id="welcomePopup">
+  <div class="popup-content">
+    <h2>Welcome to PrimeXMusic!</h2>
+    <p>Join our Telegram channel for latest updates and music:</p>
+    <a href="https://t.me/PrimeXprem07" target="_blank">Join Telegram</a>
+    <br>
+    <button id="closeWelcome">Continue to site</button>
+  </div>
+</div>
+
+<script>
+var API_KEY = 'AIzaSyCrJ_-Xuvq1iRBsEUpd32ZbK-5Br29JIfc';
+var DEFAULT_QUERY = 'latest music';
+var MAX_RESULTS = 20;
+
+// ===== Welcome Popup Logic =====
+window.addEventListener('load', function(){
+  if(!localStorage.getItem('primeXMusicVisited')){
+    document.getElementById('welcomePopup').style.display = 'flex';
+    localStorage.setItem('primeXMusicVisited', 'yes');
+  }
+});
+document.getElementById('closeWelcome').addEventListener('click', function(){
+  document.getElementById('welcomePopup').style.display = 'none';
+});
+
+// ===== Song Functions =====
+function mapItem(item){
+  if(!item) return null;
+  var videoId = item.id?.videoId || item.snippet?.resourceId?.videoId || item.id;
+  if(!videoId) return null;
+  return {
+    videoId: videoId,
+    title: item.snippet?.title || 'Untitled',
+    thumbnail: item.snippet?.thumbnails?.medium?.url || ''
+  };
+}
+
+function fetchSongs(query){
+  var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=${MAX_RESULTS}&q=${encodeURIComponent(query)}&key=${API_KEY}&callback=handlePlaylist`;
+  var script = document.createElement('script');
+  script.src = url;
+  document.body.appendChild(script);
+}
+
+function handlePlaylist(response){
+  var container = document.getElementById('music-container');
+  container.innerHTML = '';
+  if(!response.items || response.items.length==0){
+    container.innerHTML = '<p>No songs found.</p>';
+    return;
+  }
+  response.items.forEach(function(item){
+    var song = mapItem(item);
+    if(!song) return;
+    var div = document.createElement('div');
+    div.className = 'song-card';
+    div.innerHTML = `
+      <img src="${song.thumbnail}" onclick="playVideo('${song.videoId}')">
+      <p>${song.title}</p>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function playVideo(videoId){
+  var modal = document.getElementById('playerModal');
+  var player = document.getElementById('player');
+  var download = document.getElementById('downloadLink');
+  player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  download.href = `https://www.yt-download.org/api/button/mp3/${videoId}`;
+  modal.style.display = 'flex';
+}
+
+// Close modal
+document.getElementById('closeModal').addEventListener('click', function(){
+  document.getElementById('playerModal').style.display = 'none';
+  document.getElementById('player').src = '';
+});
+
+// Search form
+document.getElementById('searchForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var query = document.getElementById('searchInput').value.trim();
+  if(query) fetchSongs(query);
+  document.getElementById('searchInput').value = '';
+});
+
+// Initial load
+fetchSongs(DEFAULT_QUERY);
+</script>
