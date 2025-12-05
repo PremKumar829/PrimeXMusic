@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Prime X Prem - Music Home (Hindi & English)</title>
+  <title>Prime X Prem - Hindi & English Music</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Orbitron', Arial, sans-serif;
-      background: radial-gradient(ellipse 80% 60% at 50% 30%, #091062 0%, #88009e 70%, #1a0945 100%);
+      background: radial-gradient(ellipse at 50% 30%, #091062 0%, #88009e 70%, #1a0945 100%);
       min-height: 100vh;
       margin: 0;
       color: #fff;
@@ -22,7 +22,7 @@
       pointer-events:none;
     }
     .wrapper {
-      max-width: 950px;
+      max-width: 900px;
       margin: 44px auto 0 auto;
       background: rgba(12,18,56,0.93);
       border-radius: 24px;
@@ -184,18 +184,48 @@
       transition: background .2s;
     }
     .song-play-btn:hover { background: #ff40a1; color: #fff; }
+    .no-results { color:#1ff6ff;text-align:center;font-size:1.18em;margin: 43px 0;text-shadow:0 0 7px #1ff6ff;}
+    /* Video Modal */
+    #videoModal {
+      display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:99;
+      background:rgba(8,14,55,0.97);
+      justify-content:center;align-items:center;
+    }
+    .modal-content {
+      background:#181c44;
+      border-radius:19px;box-shadow:0 0 50px #ff40a1cc, 0 0 30px #1ff6ff88 inset;
+      padding:23px;
+      min-width:320px;max-width:85vw;
+      max-height:90vh;
+      display:flex;flex-direction:column;align-items:center;position:relative;
+    }
+    .modal-close {
+      position:absolute;top:12px;right:19px;background:none;border:none;color:#ff40a1;font-size:2em;cursor:pointer;opacity:0.78;
+      z-index:2;
+    }
+    .modal-close:hover{color:#1ff6ff;opacity:1;}
+    .modal-title {
+      color:#1ff6ff;text-align:center;margin-bottom:17px;font-size:1.22em;font-weight:bold;letter-spacing:.6px;
+      text-shadow:0 0 13px #1ff6ff55;
+    }
+    .modal-player {
+      background:#000;
+      border-radius:16px;
+      width:340px;max-width:100%;min-height:220px;
+      display:flex;align-items:center;justify-content:center;
+    }
     @media (max-width: 680px) {
-      .wrapper{padding: 18px 2px;}
+      .wrapper{padding: 16px 2px;}
       .result-grid {gap: 13px;}
       h1{font-size:1.6rem;}
+      .modal-player{width:98vw;}
     }
-
     /* Neon Popup Styles (as before) */
     .popup {
       position: fixed;
       top: 25px;
       right: 40px;
-      z-index: 20;
+      z-index: 200;
       background:rgba(11,15,55,0.98);
       border: 2.5px solid #ff40a1;
       box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
@@ -269,12 +299,18 @@
   <div class="result-section" id="autoFetchStatus">Trending Hindi & English Songs</div>
   <div class="result-grid" id="resultGrid"></div>
 </div>
-<!-- Neon Popup for New User -->
 <div class="popup" id="userPopup">
   <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
   <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
   <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
   <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
+</div>
+<div id="videoModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-player" id="modalPlayer"></div>
+  </div>
 </div>
 <script>
 setTimeout(closePopup, 7000);
@@ -322,7 +358,6 @@ const hindiSongs = [
     lang: "Hindi"
   }
 ];
-
 const englishSongs = [
   {
     title:"Blinding Lights",
@@ -365,47 +400,84 @@ const englishSongs = [
     lang:"English"
   }
 ];
-
-function renderResults(songs) {
-  document.getElementById('resultGrid').innerHTML =
-    songs.map(song =>
-      `<div class="song-card">
-        <img class="song-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
-        <span class="song-lang">${song.lang}</span>
-        <div class="song-title">${song.title}</div>
-        <div class="song-artist">${song.artist}</div>
-        <div class="song-meta">${song.duration}</div>
-        <div class="song-action">
-          <a href="${song.url}" target="_blank">
-            <button class="song-play-btn">Play</button>
-          </a>
-        </div>
-      </div>`
-    ).join('');
+function parseYTId(url) {
+  // Extract YouTube video ID from URL
+  let m = url.match(/(?:youtube\.com.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
 }
-// On load: Hindi & English trending
+function renderResults(songs) {
+  const grid = document.getElementById('resultGrid');
+  if(!songs.length) {
+    grid.innerHTML = '<div class="no-results">No results found</div>';
+    return;
+  }
+  grid.innerHTML = songs.map(song =>
+    `<div class="song-card">
+      <img class="song-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
+      <span class="song-lang">${song.lang}</span>
+      <div class="song-title">${song.title}</div>
+      <div class="song-artist">${song.artist}</div>
+      <div class="song-meta">${song.duration}</div>
+      <div class="song-action">
+        <button class="song-play-btn" onclick="playSong('${song.url.replace(/'/g,"\\'")}', '${song.title.replace(/'/g,"\\'")}')">Play</button>
+      </div>
+    </div>`
+  ).join('');
+}
 function showTrending() {
   renderResults([...hindiSongs, ...englishSongs]);
   document.getElementById('autoFetchStatus').textContent = "Trending Hindi & English Songs";
 }
-showTrending();
+
+// Always show trending on load & on refresh
+window.addEventListener("load", showTrending);
 
 function triggerSearch() {
   const val = document.getElementById('musicSearch').value.trim().toLowerCase();
+  // If blank: show trending
   if(!val) { showTrending(); return; }
-  const filtered = [...hindiSongs, ...englishSongs].filter(song =>
+  const allSongs = [...hindiSongs, ...englishSongs];
+  const filtered = allSongs.filter(song =>
     song.title.toLowerCase().includes(val) ||
     song.artist.toLowerCase().includes(val) ||
     song.lang.toLowerCase().includes(val)
   );
-  renderResults(filtered.length ? filtered : []);
-  document.getElementById('autoFetchStatus').textContent = filtered.length
-    ? "Your Search Results"
-    : "No results found";
+  if(filtered.length) {
+    renderResults(filtered);
+    document.getElementById('autoFetchStatus').textContent = "Your Search Results";
+  } else {
+    // Show trending again instead of "No results"
+    showTrending();
+    document.getElementById('autoFetchStatus').textContent = "No results, showing Trending Songs";
+  }
 }
 document.getElementById('musicSearch').addEventListener('keyup', function(e){
   if(e.key==='Enter')triggerSearch();
 });
+
+// Embedded YouTube Player Modal:
+function playSong(url, title) {
+  const videoId = parseYTId(url);
+  const modal = document.getElementById('videoModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalPlayer = document.getElementById('modalPlayer');
+  if(videoId) {
+    modalPlayer.innerHTML =
+      `<iframe width="100%" height="220" style="border-radius:12px;border:none;"
+        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  } else {
+    modalPlayer.innerHTML = "<div style='color:#ff40a1;text-align:center;padding:29px;'>Cannot play this song</div>";
+  }
+  modalTitle.textContent = title;
+  modal.style.display = "flex";
+}
+function closeModal() {
+  const modal = document.getElementById('videoModal');
+  const modalPlayer = document.getElementById('modalPlayer');
+  modalPlayer.innerHTML = '';
+  modal.style.display = "none";
+}
 </script>
 </body>
 </html>
