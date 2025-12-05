@@ -1,410 +1,342 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prime X Prem — Music Player</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <title>Prime X Prem - Neon YouTube Music Search</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#05060a;
-      --neon1:#00f0ff;
-      --neon2:#7cff5f;
-      --card: rgba(255,255,255,0.04);
-      --glass: rgba(255,255,255,0.03);
+    body {
+      font-family: 'Orbitron', Arial, sans-serif;
+      background: radial-gradient(ellipse at 50% 20%, #06176c 0%, #1a0945 100%);
+      min-height: 100vh;
+      margin: 0;
+      color: #fff;
+      overflow-x: hidden;
     }
-    html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,#020204,#071026);color:#e6f7ff;overflow:hidden}
-    /* Neon animated background */
-    .bg {
-      position:fixed; inset:0; z-index:0;
-      background: radial-gradient(ellipse at 20% 20%, rgba(0,240,255,0.06), transparent 8%),
-                  radial-gradient(ellipse at 80% 80%, rgba(124,255,95,0.04), transparent 12%),
-                  linear-gradient(180deg,#02040a 0%, #06132a 100%);
-      overflow:hidden;
+    .neon-music-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
     }
-    .bg:after{
-      content:"";position:absolute;inset:0;background-image:
-      radial-gradient(circle at 20% 10%, rgba(0,255,255,0.02), transparent 10%),
-      radial-gradient(circle at 80% 80%, rgba(124,255,95,0.015), transparent 12%);
-      mix-blend-mode:screen;pointer-events:none;
+    .neon-bar {
+      position: absolute; bottom: 0; width: 5px;
+      background: linear-gradient(to top, #ff40a1, #1ff6ff 80%, transparent 100%);
+      border-radius: 6px;
+      animation: bounceMusic 2s infinite ease-in-out;
     }
-    /* Floating neon lines */
-    .neon-lines {position:absolute;inset:0;pointer-events:none;z-index:0}
-    .neon-lines span{position:absolute;width:40%;height:2px;background:linear-gradient(90deg,var(--neon1),var(--neon2));opacity:0.06;filter:blur(8px);animation:glide 12s linear infinite}
-    .neon-lines span.n2{top:30%;left:-20%;animation-duration:18s}
-    .neon-lines span.n3{top:70%;left:-10%;animation-duration:22s;opacity:0.04}
-    @keyframes glide{0%{transform:translateX(-120%)}100%{transform:translateX(220%)}}
-
-    /* App layout */
-    .app {
-      position:relative; z-index:10;
-      height:100vh; display:flex; gap:22px; align-items:center; justify-content:center;
-      padding:30px;
+    .neon-bar:nth-child(1) { left: 14vw; height: 70px; animation-delay: 0s;}
+    .neon-bar:nth-child(2) { left: 19vw; height: 140px; animation-delay: .25s;}
+    .neon-bar:nth-child(3) { left: 23vw; height: 100px; animation-delay: .5s;}
+    .neon-bar:nth-child(4) { left: 31vw; height: 120px; animation-delay: .8s;}
+    .neon-bar:nth-child(5) { left: 39vw; height: 150px; animation-delay: .1s;}
+    .neon-bar:nth-child(6) { left: 60vw; height: 110px; animation-delay: .3s;}
+    .neon-bar:nth-child(7) { left: 68vw; height: 200px; animation-delay: .9s;}
+    .neon-bar:nth-child(8) { left: 74vw; height: 150px; animation-delay: .7s;}
+    .neon-bar:nth-child(9) { left: 78vw; height: 90px; animation-delay: 1.3s;}
+    .neon-bar:nth-child(10){ left: 90vw; height: 125px; animation-delay: .5s;}
+    @keyframes bounceMusic {
+      0%,100%{transform:translateY(0);}
+      18%{transform:translateY(-22px);}
+      40%{transform:translateY(-42px);}
+      60%{transform:translateY(2px);}
+      82%{transform:translateY(-16px);}
     }
-    .panel {
-      background:var(--glass); border-radius:16px; padding:18px; box-shadow:0 8px 40px rgba(0,0,0,0.6);
-      min-height:420px;
+
+    .wrapper {
+      max-width: 900px;
+      margin: 60px auto 0 auto;
+      background: rgba(11,15,55,0.94);
+      border-radius: 18px;
+      box-shadow: 0 0 50px #1ff6ffc0, 0 0 140px #ff40a180 inset;
+      border: 2.5px solid #1ff6ff;
+      padding: 36px 18px 44px 18px;
+      position: relative;
+      z-index: 2;
     }
-    .left { width:360px; }
-    .right { width:640px; }
+    h1 {
+      color: #ff40a1;
+      font-size: 2.1rem;
+      text-shadow: 0 0 16px #ff40a1, 0 0 22px #1ff6ff;
+      margin-bottom: 25px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    .search-bar {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto 28px auto;
+      display: flex;
+      align-items: center;
+      background: #182058;
+      border-radius: 12px;
+      box-shadow: 0 0 18px #1ff6ff77;
+      padding: 5px 8px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 15px 18px;
+      outline: none;
+      border: none;
+      font-size: 1.13rem;
+      background: none;
+      color: #1ff6ff;
+      font-family: inherit;
+      border-radius: 8px;
+      box-shadow: 0 0 4px #1ff6ffc9;
+    }
+    .search-bar button {
+      background: #1ff6ff;
+      color: #07041b;
+      font-weight: bold;
+      font-size: 1.15rem;
+      border-radius: 8px;
+      border: none;
+      padding: 12px 24px;
+      cursor: pointer;
+      box-shadow: 0 0 16px #1ff6ffc9;
+      margin-left: 8px;
+      transition: background .2s;
+    }
+    .search-bar button:hover {
+      background: #ff40a1; color: #fff;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 22px;
+      margin-top: 16px;
+      margin-bottom: 31px;
+    }
+    .yt-card {
+      background: rgba(25,40,90,0.95);
+      border-radius: 12px;
+      box-shadow: 0 0 17px #1ff6ff50;
+      padding: 11px 12px 8px 12px;
+      transition: box-shadow .18s, transform .18s;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .yt-card:hover {
+      box-shadow: 0 0 44px #ff40a1bb, 0 0 17px #1ff6ff50;
+      transform: translateY(-4px) scale(1.04);
+      z-index: 3;
+    }
+    .yt-thumb {
+      border-radius: 8px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      margin-bottom: 9px;
+      box-shadow: 0 0 17px #1ff6ff40;
+    }
+    .yt-title {
+      color: #1ff6ff;
+      font-weight: bold;
+      font-size: 1.06rem;
+      margin-bottom: 3px;
+      text-shadow: 0 0 10px #1ff6ff66;
+    }
+    .yt-artist {
+      color: #ff40a1;
+      font-size: .93em;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    .yt-meta {
+      font-size: .88em;
+      color: #b1efff;
+      margin-bottom: 4px;
+    }
+    .yt-action {
+      margin-top: 8px;
+      text-align: right;
+    }
+    .yt-play-btn {
+      background: #1ff6ff;
+      color: #1a0366;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      letter-spacing:.6px;
+      font-size: 1rem;
+      padding: 8px 17px;
+      cursor: pointer;
+      box-shadow: 0 0 14px #1ff6ff80, 0 0 7px #ff40a180 inset;
+      transition: background .2s;
+    }
+    .yt-play-btn:hover { background: #ff40a1; color: #fff; }
+    .auto-status {text-align:center;margin-bottom:9px;color:#1ff6ff;text-shadow:0 0 6px #1ff6ff99;}
+    @media (max-width: 540px) {
+      .wrapper{padding: 22px 2px;}
+      .result-grid {gap: 11px;}
+    }
 
-    h1{font-size:20px;margin:0 0 8px;color:var(--neon1);text-shadow:0 6px 18px rgba(0,240,255,0.06)}
-    .sub{color:#98b4c2;font-size:13px;margin-bottom:12px}
-
-    /* playlist */
-    .add-form {display:flex; gap:8px; margin-bottom:12px}
-    .add-form input{flex:1;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.03);color:#e6f7ff}
-    .add-btn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#001a11;font-weight:700;cursor:pointer}
-
-    .playlist{max-height:520px;overflow:auto;padding-right:6px}
-    .track{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;margin-bottom:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer}
-    .track img{width:56px;height:40px;border-radius:6px;object-fit:cover;border:2px solid rgba(255,255,255,0.03)}
-    .track .meta{flex:1}
-    .track .meta .title{font-weight:600;color:#dff}
-    .track .meta .small{font-size:12px;color:#9fb4c0}
-    .track .btns{display:flex;gap:6px}
-    .track .remove {background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px;border-radius:6px;color:#ff6b6b;cursor:pointer}
-
-    /* player area */
-    .player-box{display:flex;flex-direction:column;align-items:center;gap:14px}
-    .now {display:flex;gap:12px;align-items:center;width:100%}
-    .circle-thumb{width:120px;height:120px;border-radius:999px;overflow:hidden;border:6px solid rgba(0,240,255,0.12);box-shadow:0 12px 40px rgba(0,240,255,0.06)}
-    .now .info{flex:1;text-align:left}
-    .now .title{font-size:18px;font-weight:700;color:#eafcff}
-    .now .artist{font-size:13px;color:#a9cbd6}
-    .controls{display:flex;gap:10px;align-items:center}
-    .control-btn{padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,#0ff 30%, #7cff5f 100%);color:#001;cursor:pointer;font-weight:700}
-    .small-btn{padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:#dbefff;cursor:pointer}
-    .progress{width:100%;height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--neon1),var(--neon2));width:0%}
-
-    footer.info {margin-top:10px;color:#9fb4c0;font-size:13px}
-
-    /* modal */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.66);display:flex;align-items:center;justify-content:center;z-index:30}
-    .modal-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:12px;width:420px;text-align:center}
-    .modal-card input{width:100%;padding:10px;border-radius:8px;border:none;margin:10px 0;background:rgba(255,255,255,0.03);color:#eafcfb}
-    .modal-card .ok{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#003;background-clip:text;cursor:pointer;font-weight:700}
-    small.note{display:block;margin-top:10px;color:#9fb4c0}
-
-    /* responsive */
-    @media (max-width:980px){.app{flex-direction:column;padding:14px}.left,.right{width:100%}}
+    /* Neon Popup Styles (as before) */
+    .popup {
+      position: fixed;
+      top: 25px;
+      right: 40px;
+      z-index: 20;
+      background:rgba(11,15,55,0.98);
+      border: 2.5px solid #ff40a1;
+      box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
+      border-radius: 12px;
+      padding: 32px 22px 22px 22px;
+      min-width: 300px;
+      text-align: center;
+      animation: popupShow 0.6s cubic-bezier(.74,.12,.44,1.02) both;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+    @keyframes popupShow {
+      0%{opacity:0;transform:scale(0.3);}
+      100%{opacity:1;transform:scale(1);}
+    }
+    .popup-title {
+      font-size: 1.24rem;
+      color: #ff40a1;
+      margin-bottom: 9px;
+      text-shadow: 0 0 14px #ff40a1;
+      letter-spacing: 3px;
+    }
+    .popup-desc {
+      font-size: 0.98rem;
+      color: #1ff6ff;
+      margin-bottom: 15px;
+      text-shadow: 0 0 4px #1ff6ff;
+    }
+    .telegram-link {
+      display: inline-block;
+      background: #1ff6ff;
+      color: #1a0066;
+      padding: 10px 18px;
+      border-radius: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.06rem;
+      box-shadow: 0 0 16px #1ff6ffac, 0 0 10px #ff40a1b9 inset;
+      transition: background 0.18s;
+      border: 1.5px solid #fff;
+    }
+    .telegram-link:hover {
+      background: #ff40a1; color: #fff; box-shadow: 0 0 24px #ff40a1;
+    }
+    .popup-close {
+      font-size: 1.2rem;
+      border: none;
+      background: none;
+      color: #ff40a1;
+      position: absolute;
+      top: 14px; right: 17px;
+      cursor: pointer;
+      outline: none;
+      opacity: 0.88;
+      transition: color 0.2s, opacity .18s;
+    }
+    .popup-close:hover { color: #1ff6ff; opacity: 1; }
   </style>
 </head>
 <body>
+<div class="neon-music-bg" aria-hidden="true">
+  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
+  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
+  <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div> <div class="neon-bar"></div>
+</div>
 
-  <div class="bg"></div>
-  <div class="neon-lines" aria-hidden="true">
-    <span class="n1" style="top:12%;"></span>
-    <span class="n2" style="top:38%;"></span>
-    <span class="n3" style="top:78%;"></span>
+<div class="wrapper">
+  <h1>🎶 Neon YouTube Music Search</h1>
+  <div class="search-bar">
+    <input type="text" id="musicSearch" placeholder="Search music as on YouTube (e.g. Alan Walker, BTS)">
+    <button onclick="triggerSearch()">Search</button>
   </div>
+  <div class="auto-status" id="autoFetchStatus">Auto-finding trending music from YouTube...</div>
+  <div class="result-grid" id="resultGrid"></div>
+</div>
 
-  <div class="app">
-    <!-- Left: Playlist -->
-    <div class="panel left">
-      <h1>Prime X Prem — Music</h1>
-      <div class="sub">Add YouTube track URL (or paste video id) to create playlist</div>
-
-      <div class="add-form">
-        <input id="urlInput" placeholder="Paste YouTube URL or video id" />
-        <button class="add-btn" id="addBtn">Add</button>
-      </div>
-
-      <div class="playlist" id="playlist"></div>
-
-      <div style="margin-top:12px;font-size:13px;color:#9fb4c0">
-        <strong>Tips:</strong> Autoplay may require you to press Play once depending on browser. Use "Background Play" to allow audio while switching tabs.
-      </div>
-    </div>
-
-    <!-- Right: Player -->
-    <div class="panel right">
-      <div class="player-box">
-        <div class="now">
-          <div class="circle-thumb" id="thumbWrap">
-            <img id="thumb" src="https://i.ibb.co/0jW7Q6N/money.png" alt="thumb" style="width:100%;height:100%;object-fit:cover">
-          </div>
-          <div class="info">
-            <div class="title" id="nowTitle">No track loaded</div>
-            <div class="artist" id="nowArtist">Prime X Prem</div>
-          </div>
-        </div>
-
-        <div id="playerHolder" style="width:100%;max-width:540px;margin-top:6px">
-          <!-- YouTube iframe will be injected here -->
-          <div id="player"></div>
-        </div>
-
-        <div class="controls">
-          <button class="small-btn" id="prevBtn">Prev</button>
-          <button class="control-btn" id="playBtn">Play</button>
-          <button class="small-btn" id="nextBtn">Next</button>
-
-          <div style="flex:1"></div>
-
-          <button class="small-btn" id="shuffleBtn">Shuffle</button>
-          <button class="small-btn" id="loopBtn">Loop</button>
-        </div>
-
-        <div style="width:100%;max-width:540px">
-          <div class="progress" id="progress"><i></i></div>
-        </div>
-
-        <footer class="info">Play from YouTube • Welcome to <strong>Prime X Prem</strong></footer>
-      </div>
-    </div>
-  </div>
-
-  <!-- New user modal -->
-  <div class="modal" id="newUserModal" style="display:none">
-    <div class="modal-card" role="dialog" aria-modal="true">
-      <h2 style="color:var(--neon1)">Welcome to Prime X Prem</h2>
-      <p style="color:#bfefff">Enter your name to join the community</p>
-      <input id="newUserName" placeholder="Your name (e.g. Prem Kumar)" />
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
-        <button class="ok" id="saveUser">Join & Continue</button>
-      </div>
-      <small class="note">Join our Telegram for updates: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></small>
-    </div>
-  </div>
-
+<!-- Neon Popup for New User -->
+<div class="popup" id="userPopup">
+  <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
+  <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
+  <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
+  <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
+</div>
 <script>
-  /***** Playlist + Player logic using YouTube IFrame API *****/
+setTimeout(closePopup, 7000);
+function closePopup() { var popup = document.getElementById('userPopup'); if(popup) popup.style.display = 'none'; }
 
-  // simple playlist structure
-  let playlist = JSON.parse(localStorage.getItem('px_playlist') || '[]');
-  let currentIndex = 0;
-  let shuffleMode = false;
-  let loopMode = false;
-  let player; // YT player object
-
-  // utility to parse YouTube id from many URL formats
-  function parseYouTubeId(url){
-    if(!url) return null;
-    url = url.trim();
-    // If only id
-    if(/^[a-zA-Z0-9_-]{8,}$/.test(url) && !url.includes('http')) return url;
-    // try regex
-    const reg = /(?:v=|\/embed\/|\.be\/|\/v\/|\/watch\?v=|\/watch\/|\/shorts\/)([A-Za-z0-9_-]{6,})/i;
-    const m = url.match(reg);
-    if(m && m[1]) return m[1];
-    // fallback: last 11 chars
-    if(url.length >= 11) return url.slice(-11);
-    return null;
+// DEMO: Trending songs as "Auto Results"
+// Replace with live YouTube search via Data API for production!
+const demoSongs = [
+  {
+    title:"Alan Walker - Faded",
+    artist:"Alan Walker",
+    thumb:"https://i.ytimg.com/vi/60ItHLz5WEA/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=60ItHLz5WEA",
+    duration:"3:32"
+  },
+  {
+    title:"The Weeknd - Blinding Lights",
+    artist:"The Weeknd",
+    thumb:"https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=fHI8X4OXluQ",
+    duration:"3:21"
+  },
+  {
+    title:"BTS - Dynamite",
+    artist:"BTS",
+    thumb:"https://i.ytimg.com/vi/gdZLi9oWNZg/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=gdZLi9oWNZg",
+    duration:"3:19"
+  },
+  {
+    title:"Marshmello & Jonas Brothers - Leave Before You Love Me",
+    artist:"Marshmello, Jonas Brothers",
+    thumb:"https://i.ytimg.com/vi/Gvc4Q3x3qQg/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=Gvc4Q3x3qQg",
+    duration:"2:35"
+  },
+  {
+    title:"Imagine Dragons - Believer",
+    artist:"Imagine Dragons",
+    thumb:"https://i.ytimg.com/vi/7wtfhZwyrcc/mqdefault.jpg",
+    url:"https://www.youtube.com/watch?v=7wtfhZwyrcc",
+    duration:"3:24"
   }
+];
 
-  // render playlist UI
-  function renderPlaylist(){
-    const el = document.getElementById('playlist');
-    el.innerHTML = '';
-    playlist.forEach((t, i) => {
-      const div = document.createElement('div');
-      div.className = 'track';
-      div.dataset.index = i;
-      div.innerHTML = `
-        <img src="${t.thumb}" alt="thumb">
-        <div class="meta">
-          <div class="title">${t.title || t.id}</div>
-          <div class="small">${t.id}</div>
+function renderResults(songs) {
+  document.getElementById('resultGrid').innerHTML = 
+    songs.map(song =>
+      `<div class="yt-card">
+        <img class="yt-thumb" src="${song.thumb}" alt="Thumb for ${song.title}">
+        <div class="yt-title">${song.title}</div>
+        <div class="yt-artist">${song.artist}</div>
+        <div class="yt-meta">${song.duration} • Ad-free playback</div>
+        <div class="yt-action">
+          <a href="${song.url}" target="_blank">
+            <button class="yt-play-btn">Play</button>
+          </a>
         </div>
-        <div class="btns">
-          <button class="remove" data-i="${i}">Remove</button>
-        </div>
-      `;
-      div.addEventListener('click', ()=>{ loadByIndex(i); });
-      el.appendChild(div);
-      div.querySelector('.remove').addEventListener('click', (ev)=>{
-        ev.stopPropagation();
-        const idx = parseInt(ev.currentTarget.dataset.i,10);
-        playlist.splice(idx,1);
-        if(idx < currentIndex) currentIndex--;
-        savePlaylist(); renderPlaylist();
-      });
-    });
-  }
+      </div>`
+    ).join('');
+}
+// Auto-fetch on load (demo)
+setTimeout(()=> {
+  renderResults(demoSongs);
+  document.getElementById('autoFetchStatus').textContent = "Trending YouTube music (simulated, auto-fetched)";
+},950);
 
-  function savePlaylist(){
-    localStorage.setItem('px_playlist', JSON.stringify(playlist));
-  }
-
-  // add btn
-  document.getElementById('addBtn').addEventListener('click', async ()=>{
-    const raw = document.getElementById('urlInput').value.trim();
-    const id = parseYouTubeId(raw);
-    if(!id){ alert('Invalid YouTube URL or id'); return; }
-    // create a temporary entry; after load we will update title/thumb
-    const entry = { id, title:'Loading...', thumb:'https://i.ibb.co/0jW7Q6N/money.png' };
-    playlist.push(entry); savePlaylist(); renderPlaylist();
-    // try to fetch metadata using oEmbed via youtube iframe API on load - we will load into player then update
-    if(playlist.length === 1 && !player){ createPlayer(id); }
-    document.getElementById('urlInput').value='';
-  });
-
-  // create player via YouTube IFrame API
-  function createPlayer(videoId){
-    if(player) return player.loadVideoById(videoId);
-    player = new YT.Player('player', {
-      height: '220',
-      width: '540',
-      videoId: videoId,
-      playerVars: { autoplay: 0, controls: 0, modestbranding:1, rel:0 },
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  function onPlayerReady(e){
-    // update UI if playlist has item
-    updateNowPlayingUI();
-    // try to play if user interacted earlier
-    // many browsers block autoplay; if blocked user must click Play
-  }
-
-  function onPlayerStateChange(e){
-    // YT Player state constants: -1(unstarted),0(ended),1(playing),2(paused)
-    if(e.data === 0){ // ended
-      if(loopMode) { playIndex(currentIndex); return; }
-      if(shuffleMode) { playIndex(Math.floor(Math.random()*playlist.length)); return; }
-      playNext();
-    }
-    if(e.data === 1){ // playing
-      // update progress ticker
-      startProgress();
-    } else {
-      stopProgress();
-    }
-    // update now playing info
-    updateNowPlayingUI();
-  }
-
-  // load by playlist index
-  function loadByIndex(i){
-    if(i < 0 || i >= playlist.length) return;
-    currentIndex = i;
-    const id = playlist[i].id;
-    if(!player) createPlayer(id);
-    else player.loadVideoById(id);
-    // after video loads, we can get title/thumb via player.getVideoData()
-    setTimeout(()=> updateNowPlayingUI(), 600);
-  }
-
-  function playIndex(i){
-    loadByIndex(i);
-    setTimeout(()=>{ try{ player.playVideo(); }catch(e){} }, 500);
-  }
-
-  function playNext(){
-    if(playlist.length === 0) return;
-    currentIndex = (currentIndex + 1) % playlist.length;
-    playIndex(currentIndex);
-  }
-  function playPrev(){
-    if(playlist.length === 0) return;
-    currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-    playIndex(currentIndex);
-  }
-
-  // controls
-  document.getElementById('playBtn').addEventListener('click', ()=>{
-    if(!player){
-      if(playlist.length) createPlayer(playlist[0].id);
-      else { alert('Add a YouTube link first'); return; }
-    }
-    const state = player.getPlayerState();
-    if(state === 1) { player.pauseVideo(); document.getElementById('playBtn').innerText='Play'; }
-    else { player.playVideo(); document.getElementById('playBtn').innerText='Pause'; }
-  });
-  document.getElementById('nextBtn').addEventListener('click', ()=>playNext());
-  document.getElementById('prevBtn').addEventListener('click', ()=>playPrev());
-  document.getElementById('shuffleBtn').addEventListener('click', ()=>{
-    shuffleMode = !shuffleMode;
-    document.getElementById('shuffleBtn').style.background = shuffleMode ? 'linear-gradient(90deg,var(--neon1),var(--neon2))' : '';
-  });
-  document.getElementById('loopBtn').addEventListener('click', ()=>{
-    loopMode = !loopMode;
-    document.getElementById('loopBtn').style.background = loopMode ? 'linear-gradient(90deg,var(--neon1),var(--neon2))' : '';
-  });
-
-  /* progress handling */
-  let progInterval;
-  function startProgress(){
-    stopProgress();
-    progInterval = setInterval(()=> {
-      try{
-        const dur = player.getDuration() || 0;
-        const cur = player.getCurrentTime() || 0;
-        const percent = dur ? (cur/dur)*100 : 0;
-        document.querySelector('#progress > i').style.width = percent + '%';
-      }catch(e){}
-    }, 300);
-  }
-  function stopProgress(){ clearInterval(progInterval); }
-
-  // update now playing UI (title/thumb) using player.getVideoData()
-  function updateNowPlayingUI(){
-    if(!player) return;
-    try{
-      const data = player.getVideoData();
-      const title = data.title || (playlist[currentIndex] && playlist[currentIndex].id) || 'No track';
-      const id = data.video_id || (playlist[currentIndex] && playlist[currentIndex].id) || '';
-      const thumb = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : 'https://i.ibb.co/0jW7Q6N/money.png';
-      document.getElementById('nowTitle').innerText = title;
-      document.getElementById('thumb').src = thumb;
-      // update playlist entry title if missing
-      if(playlist[currentIndex]) { playlist[currentIndex].title = title; playlist[currentIndex].thumb = thumb; savePlaylist(); renderPlaylist(); }
-    }catch(e){}
-  }
-
-  /* Load YouTube IFrame API asynchronously */
-  (function loadYT(){
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-  })();
-
-  // handle play when user clicks on track (attach after content)
-  window.addEventListener('load', ()=> {
-    renderPlaylist();
-    // if saved playlist and not empty, show first item meta
-    if(playlist.length){
-      document.getElementById('nowTitle').innerText = playlist[0].title || playlist[0].id;
-      document.getElementById('thumb').src = playlist[0].thumb || `https://i.ytimg.com/vi/${playlist[0].id}/hqdefault.jpg`;
-    }
-  });
-
-  /***** New-user popup: store name in localStorage and show Telegram link *****/
-  const modal = document.getElementById('newUserModal');
-  const storedName = localStorage.getItem('px_user');
-  if(!storedName){
-    modal.style.display='flex';
-  } else {
-    // show subtle welcome in console
-    console.log('Welcome back,', storedName);
-  }
-  document.getElementById('saveUser').addEventListener('click', ()=>{
-    const nm = document.getElementById('newUserName').value.trim();
-    if(!nm) { alert('Please enter your name'); return; }
-    localStorage.setItem('px_user', nm);
-    modal.style.display='none';
-    // small greeting
-    alert('Welcome, ' + nm + '\nJoin our Telegram for updates: https://t.me/primexprem');
-  });
-
-  /* small UX: allow Enter to add */
-  document.getElementById('urlInput').addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter'){ document.getElementById('addBtn').click(); }
-  });
-
-  /* small tweak: clicking Telegram link in modal will open in new tab */
-  // done via a standard anchor tag
-
-  /* NOTE: browsers block autoplay of unmuted audio until user interacts.
-     To ensure background play in mobile browsers, user must press Play or interact first.
-     This page will remember playlist and allow background playback after a user gesture. */
+// Search bar logic
+function triggerSearch() {
+  const val = document.getElementById('musicSearch').value.trim().toLowerCase();
+  if(!val) { renderResults(demoSongs); return; }
+  // Simulate search: filter results by title or artist (in real API: send to server/YT Data API)
+  const filtered = demoSongs.filter(s => 
+    s.title.toLowerCase().includes(val) || s.artist.toLowerCase().includes(val)
+  );
+  renderResults(filtered.length?filtered:demoSongs); // fallback to trending if nothing matches
+}
+document.getElementById('musicSearch').addEventListener('keyup', function(e){
+  if(e.key==='Enter')triggerSearch();
+});
 </script>
 </body>
 </html>
