@@ -125,6 +125,19 @@
       transition: background 0.15s;
     }
     .track:last-child { border-bottom: none;}
+    .ad-tag {
+      font-size: .80em;
+      margin-left: 8px;
+      background: #1ff6ff;
+      color: #1a0066;
+      border-radius: 9px;
+      padding: 0 8px;
+      font-weight: bold;
+      box-shadow: 0 0 8px #1ff6ffb7;
+      letter-spacing:.4px;
+      opacity: .85;
+    }
+    .ad-tag.free { background: #1ff6ff; color: #013057; }
     .track .icon {
       font-size: 1.3em;
       color: #ff40a1;
@@ -275,7 +288,7 @@
         <span></span>
       </label>
     </div>
-    <div class="auto-fetching" id="autoFetching">Auto-fetching music from YouTube...</div>
+    <div class="auto-fetching" id="autoFetching">Auto-fetching ads-free trending music from YouTube...</div>
     <div class="music-list" id="musicList">
       <!-- Fetched/added tracks appear here -->
     </div>
@@ -292,18 +305,19 @@
   <script>
     // Show popup for 7 seconds then auto-close
     setTimeout(closePopup, 7000);
-
     function closePopup() {
       var popup = document.getElementById('userPopup');
       if(popup) popup.style.display = 'none';
     }
 
-    // Simulate auto-fetching feature with demo tracks
-    let demoTracks = [
-      {title:'Alan Walker - Faded', url:'https://youtu.be/60ItHLz5WEA'},
-      {title:'The Spectre - Alan Walker', url:'https://youtu.be/wJnBTPUQS5A'},
-      {title:'BTS - Dynamite', url:'https://youtu.be/gdZLi9oWNZg'},
-      {title:'Imagine Dragons - Believer', url:'https://youtu.be/7wtfhZwyrcc'}
+    // Simulate "auto-fetching ads-free trending music" from YouTube
+    // In production, integrate with YouTube API, filter Official Music, or serve via your custom backend (ads-free playback).
+    let trendingMusic = [
+      { title: 'Alan Walker - Faded', url: 'https://youtu.be/60ItHLz5WEA' },
+      { title: 'The Weeknd - Blinding Lights', url: 'https://youtu.be/fHI8X4OXluQ' },
+      { title: 'Shawn Mendes, Camila Cabello - Señorita', url: 'https://youtu.be/Pkh8UtuejGw' },
+      { title: 'BTS - Dynamite', url: 'https://youtu.be/gdZLi9oWNZg' },
+      { title: 'Imagine Dragons - Believer', url: 'https://youtu.be/7wtfhZwyrcc' }
     ];
     let musicList = document.getElementById('musicList');
     let autoFetchDiv = document.getElementById('autoFetching');
@@ -313,14 +327,16 @@
         `<div class="track">
           <span class="icon">▶️</span>
           <a href="${track.url}" target="_blank" style="color:#1ff6ff;text-shadow:0 0 8px #1ff6ff;font-weight:bold;">${track.title}</a>
+          <span class="ad-tag free">Ads-Free</span>
         </div>`
       ).join('');
     }
+
     // Simulate fetching delay
     setTimeout(()=> {
-      renderTracks(demoTracks);
-      autoFetchDiv.textContent = "Fetched trending music from YouTube!";
-    },1400);
+      renderTracks(trendingMusic);
+      autoFetchDiv.textContent = "Fetched trending ads-free music from YouTube! (Demo)";
+    }, 1400);
 
     // Add music manually
     function addMusic() {
@@ -328,9 +344,9 @@
       if(!val.trim()) return alert('Please enter a YouTube link or music title');
       let fakeTitle = val.match(/youtu\.be\/([a-zA-Z0-9_-]+)/) || val.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/)
         ? "YouTube Music #" + Math.floor(Math.random()*1000) : val;
-      let track = {title:fakeTitle, url:val};
-      demoTracks.unshift(track);
-      renderTracks(demoTracks); 
+      let track = {title: fakeTitle, url: val};
+      trendingMusic.unshift(track);
+      renderTracks(trendingMusic); 
       document.getElementById('musicInput').value = "";
     }
 
