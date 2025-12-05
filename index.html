@@ -1,364 +1,410 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Prime X Prem| Prime X Prem</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prime X Prem — Music Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Orbitron', Arial, sans-serif;
-      background: radial-gradient(at 20% 30%, #03145f 0%, #03042a 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80');
-      background-size: cover;
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
+    :root{
+      --bg:#05060a;
+      --neon1:#00f0ff;
+      --neon2:#7cff5f;
+      --card: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.03);
     }
-    .container {
-      max-width: 480px;
-      margin: 60px auto;
-      background: rgba(10,14,50,0.85);
-      padding: 32px 24px 24px 24px;
-      border-radius: 16px;
-      box-shadow: 0 0 40px #082d7e, 0 0 140px #06c6f7a1 inset;
-      border: 2.5px solid #1ff6ff;
-      position: relative;
+    html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,#020204,#071026);color:#e6f7ff;overflow:hidden}
+    /* Neon animated background */
+    .bg {
+      position:fixed; inset:0; z-index:0;
+      background: radial-gradient(ellipse at 20% 20%, rgba(0,240,255,0.06), transparent 8%),
+                  radial-gradient(ellipse at 80% 80%, rgba(124,255,95,0.04), transparent 12%),
+                  linear-gradient(180deg,#02040a 0%, #06132a 100%);
+      overflow:hidden;
     }
-    h1 {
-      text-shadow: 0 0 10px #1ff6ff, 0 0 15px #ff40a1;
-      font-size: 2.25rem;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-      color: #ff40a1;
+    .bg:after{
+      content:"";position:absolute;inset:0;background-image:
+      radial-gradient(circle at 20% 10%, rgba(0,255,255,0.02), transparent 10%),
+      radial-gradient(circle at 80% 80%, rgba(124,255,95,0.015), transparent 12%);
+      mix-blend-mode:screen;pointer-events:none;
     }
-    .input-group {
-      display: flex;
-      margin-bottom: 18px;
-    }
-    .input-group input {
-      flex: 1;
-      padding: 12px;
-      background: #050e39;
-      border: 1.5px solid #1ff6ff;
-      outline: none;
-      color: #1ff6ff;
-      border-radius: 6px 0 0 6px;
-      font-size: 1rem;
-      box-shadow: 0 0 4px #1ff6ffc9;
-    }
-    .input-group button {
-      background: #1ff6ff;
-      color: #050e39;
-      border: none;
-      border-radius: 0 6px 6px 0;
-      padding: 12px 22px;
-      font-size: 1.12rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 12px #1ff6ffc9;
-      transition: background 0.2s;
-    }
-    .input-group button:hover {
-      background: #ff40a1;
-      color: #fff;
-    }
+    /* Floating neon lines */
+    .neon-lines {position:absolute;inset:0;pointer-events:none;z-index:0}
+    .neon-lines span{position:absolute;width:40%;height:2px;background:linear-gradient(90deg,var(--neon1),var(--neon2));opacity:0.06;filter:blur(8px);animation:glide 12s linear infinite}
+    .neon-lines span.n2{top:30%;left:-20%;animation-duration:18s}
+    .neon-lines span.n3{top:70%;left:-10%;animation-duration:22s;opacity:0.04}
+    @keyframes glide{0%{transform:translateX(-120%)}100%{transform:translateX(220%)}}
 
-    .options {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-bottom: 18px;
+    /* App layout */
+    .app {
+      position:relative; z-index:10;
+      height:100vh; display:flex; gap:22px; align-items:center; justify-content:center;
+      padding:30px;
     }
-    .toggle-label {
-      font-size: 1rem;
-      letter-spacing: 1px;
-      margin-right: 7px;
+    .panel {
+      background:var(--glass); border-radius:16px; padding:18px; box-shadow:0 8px 40px rgba(0,0,0,0.6);
+      min-height:420px;
     }
-    .toggle {
-      width: 44px;
-      height: 24px;
-      background: #0e134c;
-      border-radius: 12px;
-      position: relative;
-      cursor: pointer;
-      box-shadow: 0 0 7px #1ff6ff, 0 0 7px #ff40a1 inset;
-    }
-    .toggle input {
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      position: absolute;
-      cursor: pointer;
-      left: 0;
-      top: 0;
-      z-index: 2;
-    }
-    .toggle span {
-      position: absolute;
-      left: 2px; top: 2px;
-      width: 20px;
-      height: 20px;
-      background: #1ff6ff;
-      border-radius: 50%;
-      transition: left 0.2s, background 0.3s;
-      box-shadow: 0 0 12px #1ff6ff;
-    }
-    .toggle input:checked + span {
-      left: 22px;
-      background: #ff40a1;
-      box-shadow: 0 0 12px #ff40a1;
-    }
-    .music-list {
-      margin-top: 18px;
-      border-top: 1px solid #1ff6ff40;
-      padding-top: 16px;
-      min-height: 58px;
-    }
-    .track {
-      padding:10px 0;
-      border-bottom: 1px solid #1ff6ff26;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: #fff;
-      transition: background 0.15s;
-    }
-    .track:last-child { border-bottom: none;}
-    .ad-tag {
-      font-size: .80em;
-      margin-left: 8px;
-      background: #1ff6ff;
-      color: #1a0066;
-      border-radius: 9px;
-      padding: 0 8px;
-      font-weight: bold;
-      box-shadow: 0 0 8px #1ff6ffb7;
-      letter-spacing:.4px;
-      opacity: .85;
-    }
-    .ad-tag.free { background: #1ff6ff; color: #013057; }
-    .track .icon {
-      font-size: 1.3em;
-      color: #ff40a1;
-    }
-    .auto-fetching {
-      margin-top: 10px;
-      font-size: 0.99rem;
-      color: #1ff6ff;
-      text-shadow: 0 0 6px #1ff6ff99;
-    }
-    /* Neon Music Animation */
-    .neon-music-bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .neon-bar {
-      position: absolute;
-      bottom: 0;
-      width: 4px;
-      background: linear-gradient(to top, #ff40a1, #1ff6ff 80%, transparent 100%);
-      border-radius: 6px;
-      animation: bounceMusic 2s infinite ease-in-out;
-    }
-    /* animate bars with different delays */
-    .neon-bar:nth-child(1) { left: 15vw; height: 80px; animation-delay: 0s;}
-    .neon-bar:nth-child(2) { left: 21vw; height: 180px; animation-delay: .3s;}
-    .neon-bar:nth-child(3) { left: 26vw; height: 140px; animation-delay: .7s;}
-    .neon-bar:nth-child(4) { left: 32vw; height: 95px; animation-delay: .5s;}
-    .neon-bar:nth-child(5) { left: 37vw; height: 120px; animation-delay: 1s;}
-    .neon-bar:nth-child(6) { left: 60vw; height: 110px; animation-delay: .25s;}
-    .neon-bar:nth-child(7) { left: 67vw; height: 195px; animation-delay: .9s;}
-    .neon-bar:nth-child(8) { left: 74vw; height: 150px; animation-delay: .7s;}
-    .neon-bar:nth-child(9) { left: 79vw; height: 89px; animation-delay: 1.3s;}
-    .neon-bar:nth-child(10){ left: 87vw; height: 125px; animation-delay: .2s;}
-    @keyframes bounceMusic {
-      0%,100%{transform:translateY(0);}
-      20%{transform:translateY(-20px);}
-      40%{transform:translateY(-45px);}
-      60%{transform:translateY(4px);}
-      80%{transform:translateY(-14px);}
-    }
+    .left { width:360px; }
+    .right { width:640px; }
 
-    /* Neon Popup Styles */
-    .popup {
-      position: fixed;
-      top: 25px;
-      right: 40px;
-      z-index: 20;
-      background:rgba(11,15,55,0.98);
-      border: 2.5px solid #ff40a1;
-      box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
-      border-radius: 12px;
-      padding: 32px 22px 22px 22px;
-      min-width: 300px;
-      text-align: center;
-      animation: popupShow 0.65s cubic-bezier(.74,.12,.44,1.02) both;
-      font-family: 'Orbitron', Arial, sans-serif;
-    }
-    @keyframes popupShow {
-      0%{opacity:0;transform:scale(0.3);}
-      100%{opacity:1;transform:scale(1);}
-    }
-    .popup-title {
-      font-size: 1.35rem;
-      color: #ff40a1;
-      margin-bottom: 9px;
-      text-shadow: 0 0 14px #ff40a1;
-      letter-spacing: 3px;
-    }
-    .popup-desc {
-      font-size: 0.98rem;
-      color: #1ff6ff;
-      margin-bottom: 15px;
-      text-shadow: 0 0 4px #1ff6ff;
-    }
-    .telegram-link {
-      display: inline-block;
-      background: #1ff6ff;
-      color: #1a0066;
-      padding: 10px 18px;
-      border-radius: 18px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1.08rem;
-      box-shadow: 0 0 16px #1ff6ffac, 0 0 10px #ff40a1b9 inset;
-      transition: background 0.18s;
-      border: 1.5px solid #fff;
-    }
-    .telegram-link:hover {
-      background: #ff40a1; color: #fff; box-shadow: 0 0 24px #ff40a1;
-    }
-    .popup-close {
-      font-size: 1.2rem;
-      border: none;
-      background: none;
-      color: #ff40a1;
-      position: absolute;
-      top: 14px; right: 17px;
-      cursor: pointer;
-      outline: none;
-      opacity: 0.88;
-      transition: color 0.2s, opacity .18s;
-    }
-    .popup-close:hover {
-      color: #1ff6ff; opacity: 1;
-    }
-    @media (max-width:700px){
-      .container{margin:24px 8px;}
-      .popup{right:12px; min-width:230px; padding:24px 12px 15px 12px;}
-      h1{font-size:1.23rem;}
-    }
+    h1{font-size:20px;margin:0 0 8px;color:var(--neon1);text-shadow:0 6px 18px rgba(0,240,255,0.06)}
+    .sub{color:#98b4c2;font-size:13px;margin-bottom:12px}
+
+    /* playlist */
+    .add-form {display:flex; gap:8px; margin-bottom:12px}
+    .add-form input{flex:1;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.03);color:#e6f7ff}
+    .add-btn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#001a11;font-weight:700;cursor:pointer}
+
+    .playlist{max-height:520px;overflow:auto;padding-right:6px}
+    .track{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;margin-bottom:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer}
+    .track img{width:56px;height:40px;border-radius:6px;object-fit:cover;border:2px solid rgba(255,255,255,0.03)}
+    .track .meta{flex:1}
+    .track .meta .title{font-weight:600;color:#dff}
+    .track .meta .small{font-size:12px;color:#9fb4c0}
+    .track .btns{display:flex;gap:6px}
+    .track .remove {background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px;border-radius:6px;color:#ff6b6b;cursor:pointer}
+
+    /* player area */
+    .player-box{display:flex;flex-direction:column;align-items:center;gap:14px}
+    .now {display:flex;gap:12px;align-items:center;width:100%}
+    .circle-thumb{width:120px;height:120px;border-radius:999px;overflow:hidden;border:6px solid rgba(0,240,255,0.12);box-shadow:0 12px 40px rgba(0,240,255,0.06)}
+    .now .info{flex:1;text-align:left}
+    .now .title{font-size:18px;font-weight:700;color:#eafcff}
+    .now .artist{font-size:13px;color:#a9cbd6}
+    .controls{display:flex;gap:10px;align-items:center}
+    .control-btn{padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,#0ff 30%, #7cff5f 100%);color:#001;cursor:pointer;font-weight:700}
+    .small-btn{padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:#dbefff;cursor:pointer}
+    .progress{width:100%;height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--neon1),var(--neon2));width:0%}
+
+    footer.info {margin-top:10px;color:#9fb4c0;font-size:13px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.66);display:flex;align-items:center;justify-content:center;z-index:30}
+    .modal-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:12px;width:420px;text-align:center}
+    .modal-card input{width:100%;padding:10px;border-radius:8px;border:none;margin:10px 0;background:rgba(255,255,255,0.03);color:#eafcfb}
+    .modal-card .ok{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#003;background-clip:text;cursor:pointer;font-weight:700}
+    small.note{display:block;margin-top:10px;color:#9fb4c0}
+
+    /* responsive */
+    @media (max-width:980px){.app{flex-direction:column;padding:14px}.left,.right{width:100%}}
   </style>
 </head>
 <body>
-  <!-- Neon Music Bars Animation Background -->
-  <div class="neon-music-bg" aria-hidden="true">
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
-    <div class="neon-bar"></div>
+
+  <div class="bg"></div>
+  <div class="neon-lines" aria-hidden="true">
+    <span class="n1" style="top:12%;"></span>
+    <span class="n2" style="top:38%;"></span>
+    <span class="n3" style="top:78%;"></span>
   </div>
 
-  <!-- Neon YouTube Music Split/Add/Background Play -->
-  <div class="container">
-    <h1>🎶 NEON YOUTUBE MUSIC</h1>
-    <div class="input-group">
-      <input type="text" id="musicInput" placeholder="Paste YouTube music link or search...">
-      <button onclick="addMusic()">Add</button>
+  <div class="app">
+    <!-- Left: Playlist -->
+    <div class="panel left">
+      <h1>Prime X Prem — Music</h1>
+      <div class="sub">Add YouTube track URL (or paste video id) to create playlist</div>
+
+      <div class="add-form">
+        <input id="urlInput" placeholder="Paste YouTube URL or video id" />
+        <button class="add-btn" id="addBtn">Add</button>
+      </div>
+
+      <div class="playlist" id="playlist"></div>
+
+      <div style="margin-top:12px;font-size:13px;color:#9fb4c0">
+        <strong>Tips:</strong> Autoplay may require you to press Play once depending on browser. Use "Background Play" to allow audio while switching tabs.
+      </div>
     </div>
-    <div class="options">
-      <span class="toggle-label">Split Feature</span>
-      <label class="toggle">
-        <input type="checkbox" id="splitToggle" checked>
-        <span></span>
-      </label>
-      <span class="toggle-label">Background Play</span>
-      <label class="toggle">
-        <input type="checkbox" id="bgToggle">
-        <span></span>
-      </label>
-    </div>
-    <div class="auto-fetching" id="autoFetching">Auto-fetching ads-free trending music from YouTube...</div>
-    <div class="music-list" id="musicList">
-      <!-- Fetched/added tracks appear here -->
+
+    <!-- Right: Player -->
+    <div class="panel right">
+      <div class="player-box">
+        <div class="now">
+          <div class="circle-thumb" id="thumbWrap">
+            <img id="thumb" src="https://i.ibb.co/0jW7Q6N/money.png" alt="thumb" style="width:100%;height:100%;object-fit:cover">
+          </div>
+          <div class="info">
+            <div class="title" id="nowTitle">No track loaded</div>
+            <div class="artist" id="nowArtist">Prime X Prem</div>
+          </div>
+        </div>
+
+        <div id="playerHolder" style="width:100%;max-width:540px;margin-top:6px">
+          <!-- YouTube iframe will be injected here -->
+          <div id="player"></div>
+        </div>
+
+        <div class="controls">
+          <button class="small-btn" id="prevBtn">Prev</button>
+          <button class="control-btn" id="playBtn">Play</button>
+          <button class="small-btn" id="nextBtn">Next</button>
+
+          <div style="flex:1"></div>
+
+          <button class="small-btn" id="shuffleBtn">Shuffle</button>
+          <button class="small-btn" id="loopBtn">Loop</button>
+        </div>
+
+        <div style="width:100%;max-width:540px">
+          <div class="progress" id="progress"><i></i></div>
+        </div>
+
+        <footer class="info">Play from YouTube • Welcome to <strong>Prime X Prem</strong></footer>
+      </div>
     </div>
   </div>
 
-  <!-- Neon Popup for New User -->
-  <div class="popup" id="userPopup">
-    <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
-    <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
-    <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
-    <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
+  <!-- New user modal -->
+  <div class="modal" id="newUserModal" style="display:none">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <h2 style="color:var(--neon1)">Welcome to Prime X Prem</h2>
+      <p style="color:#bfefff">Enter your name to join the community</p>
+      <input id="newUserName" placeholder="Your name (e.g. Prem Kumar)" />
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
+        <button class="ok" id="saveUser">Join & Continue</button>
+      </div>
+      <small class="note">Join our Telegram for updates: <a href="https://t.me/primexprem" target="_blank" style="color:var(--neon2)">t.me/primexprem</a></small>
+    </div>
   </div>
 
-  <script>
-    // Show popup for 7 seconds then auto-close
-    setTimeout(closePopup, 7000);
-    function closePopup() {
-      var popup = document.getElementById('userPopup');
-      if(popup) popup.style.display = 'none';
-    }
+<script>
+  /***** Playlist + Player logic using YouTube IFrame API *****/
 
-    // Simulate "auto-fetching ads-free trending music" from YouTube
-    // In production, integrate with YouTube API, filter Official Music, or serve via your custom backend (ads-free playback).
-    let trendingMusic = [
-      { title: 'Alan Walker - Faded', url: 'https://youtu.be/60ItHLz5WEA' },
-      { title: 'The Weeknd - Blinding Lights', url: 'https://youtu.be/fHI8X4OXluQ' },
-      { title: 'Shawn Mendes, Camila Cabello - Señorita', url: 'https://youtu.be/Pkh8UtuejGw' },
-      { title: 'BTS - Dynamite', url: 'https://youtu.be/gdZLi9oWNZg' },
-      { title: 'Imagine Dragons - Believer', url: 'https://youtu.be/7wtfhZwyrcc' }
-    ];
-    let musicList = document.getElementById('musicList');
-    let autoFetchDiv = document.getElementById('autoFetching');
+  // simple playlist structure
+  let playlist = JSON.parse(localStorage.getItem('px_playlist') || '[]');
+  let currentIndex = 0;
+  let shuffleMode = false;
+  let loopMode = false;
+  let player; // YT player object
 
-    function renderTracks(tracks) {
-      musicList.innerHTML = tracks.map(track => 
-        `<div class="track">
-          <span class="icon">▶️</span>
-          <a href="${track.url}" target="_blank" style="color:#1ff6ff;text-shadow:0 0 8px #1ff6ff;font-weight:bold;">${track.title}</a>
-          <span class="ad-tag free">Ads-Free</span>
-        </div>`
-      ).join('');
-    }
+  // utility to parse YouTube id from many URL formats
+  function parseYouTubeId(url){
+    if(!url) return null;
+    url = url.trim();
+    // If only id
+    if(/^[a-zA-Z0-9_-]{8,}$/.test(url) && !url.includes('http')) return url;
+    // try regex
+    const reg = /(?:v=|\/embed\/|\.be\/|\/v\/|\/watch\?v=|\/watch\/|\/shorts\/)([A-Za-z0-9_-]{6,})/i;
+    const m = url.match(reg);
+    if(m && m[1]) return m[1];
+    // fallback: last 11 chars
+    if(url.length >= 11) return url.slice(-11);
+    return null;
+  }
 
-    // Simulate fetching delay
-    setTimeout(()=> {
-      renderTracks(trendingMusic);
-      autoFetchDiv.textContent = "Fetched trending ads-free music from YouTube! (Demo)";
-    }, 1400);
-
-    // Add music manually
-    function addMusic() {
-      let val = document.getElementById('musicInput').value;
-      if(!val.trim()) return alert('Please enter a YouTube link or music title');
-      let fakeTitle = val.match(/youtu\.be\/([a-zA-Z0-9_-]+)/) || val.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/)
-        ? "YouTube Music #" + Math.floor(Math.random()*1000) : val;
-      let track = {title: fakeTitle, url: val};
-      trendingMusic.unshift(track);
-      renderTracks(trendingMusic); 
-      document.getElementById('musicInput').value = "";
-    }
-
-    // Toggles for Split and Background Play (demo UI only)
-    document.getElementById('splitToggle').addEventListener('change', function() {
-      musicList.style.filter = this.checked ? 'none' : 'grayscale(1)';
+  // render playlist UI
+  function renderPlaylist(){
+    const el = document.getElementById('playlist');
+    el.innerHTML = '';
+    playlist.forEach((t, i) => {
+      const div = document.createElement('div');
+      div.className = 'track';
+      div.dataset.index = i;
+      div.innerHTML = `
+        <img src="${t.thumb}" alt="thumb">
+        <div class="meta">
+          <div class="title">${t.title || t.id}</div>
+          <div class="small">${t.id}</div>
+        </div>
+        <div class="btns">
+          <button class="remove" data-i="${i}">Remove</button>
+        </div>
+      `;
+      div.addEventListener('click', ()=>{ loadByIndex(i); });
+      el.appendChild(div);
+      div.querySelector('.remove').addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const idx = parseInt(ev.currentTarget.dataset.i,10);
+        playlist.splice(idx,1);
+        if(idx < currentIndex) currentIndex--;
+        savePlaylist(); renderPlaylist();
+      });
     });
-    document.getElementById('bgToggle').addEventListener('change', function() {
-      document.body.style.background = this.checked ? 
-        "radial-gradient(at 60% 20%, #03145f 0%, #010725 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80')" : 
-        "radial-gradient(at 20% 30%, #03145f 0%, #03042a 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80')";
+  }
+
+  function savePlaylist(){
+    localStorage.setItem('px_playlist', JSON.stringify(playlist));
+  }
+
+  // add btn
+  document.getElementById('addBtn').addEventListener('click', async ()=>{
+    const raw = document.getElementById('urlInput').value.trim();
+    const id = parseYouTubeId(raw);
+    if(!id){ alert('Invalid YouTube URL or id'); return; }
+    // create a temporary entry; after load we will update title/thumb
+    const entry = { id, title:'Loading...', thumb:'https://i.ibb.co/0jW7Q6N/money.png' };
+    playlist.push(entry); savePlaylist(); renderPlaylist();
+    // try to fetch metadata using oEmbed via youtube iframe API on load - we will load into player then update
+    if(playlist.length === 1 && !player){ createPlayer(id); }
+    document.getElementById('urlInput').value='';
+  });
+
+  // create player via YouTube IFrame API
+  function createPlayer(videoId){
+    if(player) return player.loadVideoById(videoId);
+    player = new YT.Player('player', {
+      height: '220',
+      width: '540',
+      videoId: videoId,
+      playerVars: { autoplay: 0, controls: 0, modestbranding:1, rel:0 },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
     });
-  </script>
+  }
+
+  function onPlayerReady(e){
+    // update UI if playlist has item
+    updateNowPlayingUI();
+    // try to play if user interacted earlier
+    // many browsers block autoplay; if blocked user must click Play
+  }
+
+  function onPlayerStateChange(e){
+    // YT Player state constants: -1(unstarted),0(ended),1(playing),2(paused)
+    if(e.data === 0){ // ended
+      if(loopMode) { playIndex(currentIndex); return; }
+      if(shuffleMode) { playIndex(Math.floor(Math.random()*playlist.length)); return; }
+      playNext();
+    }
+    if(e.data === 1){ // playing
+      // update progress ticker
+      startProgress();
+    } else {
+      stopProgress();
+    }
+    // update now playing info
+    updateNowPlayingUI();
+  }
+
+  // load by playlist index
+  function loadByIndex(i){
+    if(i < 0 || i >= playlist.length) return;
+    currentIndex = i;
+    const id = playlist[i].id;
+    if(!player) createPlayer(id);
+    else player.loadVideoById(id);
+    // after video loads, we can get title/thumb via player.getVideoData()
+    setTimeout(()=> updateNowPlayingUI(), 600);
+  }
+
+  function playIndex(i){
+    loadByIndex(i);
+    setTimeout(()=>{ try{ player.playVideo(); }catch(e){} }, 500);
+  }
+
+  function playNext(){
+    if(playlist.length === 0) return;
+    currentIndex = (currentIndex + 1) % playlist.length;
+    playIndex(currentIndex);
+  }
+  function playPrev(){
+    if(playlist.length === 0) return;
+    currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+    playIndex(currentIndex);
+  }
+
+  // controls
+  document.getElementById('playBtn').addEventListener('click', ()=>{
+    if(!player){
+      if(playlist.length) createPlayer(playlist[0].id);
+      else { alert('Add a YouTube link first'); return; }
+    }
+    const state = player.getPlayerState();
+    if(state === 1) { player.pauseVideo(); document.getElementById('playBtn').innerText='Play'; }
+    else { player.playVideo(); document.getElementById('playBtn').innerText='Pause'; }
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>playNext());
+  document.getElementById('prevBtn').addEventListener('click', ()=>playPrev());
+  document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+    shuffleMode = !shuffleMode;
+    document.getElementById('shuffleBtn').style.background = shuffleMode ? 'linear-gradient(90deg,var(--neon1),var(--neon2))' : '';
+  });
+  document.getElementById('loopBtn').addEventListener('click', ()=>{
+    loopMode = !loopMode;
+    document.getElementById('loopBtn').style.background = loopMode ? 'linear-gradient(90deg,var(--neon1),var(--neon2))' : '';
+  });
+
+  /* progress handling */
+  let progInterval;
+  function startProgress(){
+    stopProgress();
+    progInterval = setInterval(()=> {
+      try{
+        const dur = player.getDuration() || 0;
+        const cur = player.getCurrentTime() || 0;
+        const percent = dur ? (cur/dur)*100 : 0;
+        document.querySelector('#progress > i').style.width = percent + '%';
+      }catch(e){}
+    }, 300);
+  }
+  function stopProgress(){ clearInterval(progInterval); }
+
+  // update now playing UI (title/thumb) using player.getVideoData()
+  function updateNowPlayingUI(){
+    if(!player) return;
+    try{
+      const data = player.getVideoData();
+      const title = data.title || (playlist[currentIndex] && playlist[currentIndex].id) || 'No track';
+      const id = data.video_id || (playlist[currentIndex] && playlist[currentIndex].id) || '';
+      const thumb = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : 'https://i.ibb.co/0jW7Q6N/money.png';
+      document.getElementById('nowTitle').innerText = title;
+      document.getElementById('thumb').src = thumb;
+      // update playlist entry title if missing
+      if(playlist[currentIndex]) { playlist[currentIndex].title = title; playlist[currentIndex].thumb = thumb; savePlaylist(); renderPlaylist(); }
+    }catch(e){}
+  }
+
+  /* Load YouTube IFrame API asynchronously */
+  (function loadYT(){
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+  })();
+
+  // handle play when user clicks on track (attach after content)
+  window.addEventListener('load', ()=> {
+    renderPlaylist();
+    // if saved playlist and not empty, show first item meta
+    if(playlist.length){
+      document.getElementById('nowTitle').innerText = playlist[0].title || playlist[0].id;
+      document.getElementById('thumb').src = playlist[0].thumb || `https://i.ytimg.com/vi/${playlist[0].id}/hqdefault.jpg`;
+    }
+  });
+
+  /***** New-user popup: store name in localStorage and show Telegram link *****/
+  const modal = document.getElementById('newUserModal');
+  const storedName = localStorage.getItem('px_user');
+  if(!storedName){
+    modal.style.display='flex';
+  } else {
+    // show subtle welcome in console
+    console.log('Welcome back,', storedName);
+  }
+  document.getElementById('saveUser').addEventListener('click', ()=>{
+    const nm = document.getElementById('newUserName').value.trim();
+    if(!nm) { alert('Please enter your name'); return; }
+    localStorage.setItem('px_user', nm);
+    modal.style.display='none';
+    // small greeting
+    alert('Welcome, ' + nm + '\nJoin our Telegram for updates: https://t.me/primexprem');
+  });
+
+  /* small UX: allow Enter to add */
+  document.getElementById('urlInput').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){ document.getElementById('addBtn').click(); }
+  });
+
+  /* small tweak: clicking Telegram link in modal will open in new tab */
+  // done via a standard anchor tag
+
+  /* NOTE: browsers block autoplay of unmuted audio until user interacts.
+     To ensure background play in mobile browsers, user must press Play or interact first.
+     This page will remember playlist and allow background playback after a user gesture. */
+</script>
 </body>
 </html>
