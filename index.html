@@ -1,143 +1,206 @@
-<!-- PrimeXMusic Blogger - Automatic + Search + No API Key -->
+<!-- PrimeXMusic V3 - NO YOUTUBE API KEY NEEDED (RapidAPI Search) -->
 <style>
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
-  color: #fff;
+body{
+  margin:0;
+  background:#0d0d0d;
+  font-family:Arial;
+  color:white;
 }
-#primeXMusic { max-width:1100px; margin:auto; padding:20px; }
-h1 { text-align:center; margin-bottom:20px; color:#00e5ff; text-shadow:0 0 12px #00e5ff; }
-#searchForm input { padding:10px; width:60%; border-radius:6px 0 0 6px; border:none; }
-#searchForm button { padding:10px 15px; border:none; background:#00e5ff; color:#000; border-radius:0 6px 6px 0; cursor:pointer; }
-#music-container { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
-.song-card { width:200px; cursor:pointer; background:#111; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.6); transition:0.3s; }
-.song-card:hover { transform:scale(1.05); }
-.song-card img { width:100%; display:block; }
-.song-card p { text-align:center; padding:5px; font-size:14px; }
+#app{max-width:1000px;margin:auto;padding:20px;}
+h1{text-align:center;color:#00eaff;font-size:38px;text-shadow:0 0 15px #00eaff;}
+#searchBox{display:flex;justify-content:center;margin-bottom:20px;}
+#searchInput{
+  width:70%;
+  padding:12px;
+  border:none;
+  border-radius:8px 0 0 8px;
+  outline:none;
+}
+#searchBtn{
+  padding:12px 20px;
+  border:none;
+  background:#00eaff;
+  color:black;
+  cursor:pointer;
+  border-radius:0 8px 8px 0;
+}
+#results{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;}
+.card{
+  width:200px;
+  background:#111;
+  border-radius:8px;
+  overflow:hidden;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(0,0,0,0.5);
+  transition:0.3s;
+}
+.card:hover{transform:scale(1.06);}
+.card img{width:100%;}
+.card p{text-align:center;padding:8px;font-size:14px;}
 
-/* Modal Player */
-#playerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; z-index:1000; }
-#playerModal iframe { width:100%; height:450px; border:none; border-radius:8px; }
-#playerModal button { position:absolute; top:5px; right:10px; font-size:20px; border:none; background:none; color:#fff; cursor:pointer; }
-.download-btn { background:#00ffae; color:#000; padding:5px 8px; border-radius:4px; text-align:center; display:block; margin:5px auto 10px auto; font-size:12px; text-decoration:none; }
+/* Player */
+#playerModal{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.9);
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+#playerModal iframe{
+  width:90%;
+  height:420px;
+  border:none;
+  border-radius:10px;
+}
+#closeModal{
+  position:absolute;
+  top:10px;right:20px;
+  font-size:30px;
+  color:white;
+  cursor:pointer;
+}
 
 /* Welcome Popup */
-#welcomePopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items:center; justify-content:center; z-index:2000; }
-#welcomePopup .popup-content { background:#111; padding:30px; border-radius:10px; text-align:center; max-width:400px; color:#fff; }
-#welcomePopup .popup-content h2 { color:#00e5ff; margin-bottom:15px; }
-#welcomePopup .popup-content a { display:inline-block; padding:10px 20px; background:#00ffae; color:#000; border-radius:6px; text-decoration:none; margin-top:10px; font-weight:bold; }
-#welcomePopup .popup-content button { margin-top:15px; padding:8px 15px; background:#007bff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+#welcomePopup{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:3000;
+}
+#welcomePopup .box{
+  background:#111;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  width:85%;
+  max-width:350px;
+}
+#welcomePopup h2{color:#00eaff;}
+#welcomePopup a{
+  background:#00ffae;
+  padding:10px 20px;
+  display:inline-block;
+  margin-top:10px;
+  border-radius:6px;
+  color:black;
+  font-weight:bold;
+  text-decoration:none;
+}
+#welcomePopup button{
+  margin-top:15px;
+  padding:10px 20px;
+  background:#00eaff;
+  color:black;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
 </style>
 
-<div id="primeXMusic">
+<div id="app">
   <h1>PrimeXMusic</h1>
 
-  <!-- Search -->
-  <form id="searchForm">
+  <div id="searchBox">
     <input id="searchInput" type="text" placeholder="Search songs...">
-    <button type="submit">Search</button>
-  </form>
+    <button id="searchBtn">Search</button>
+  </div>
 
-  <!-- Song Grid -->
-  <div id="music-container"></div>
+  <div id="results"></div>
 </div>
 
-<!-- Player Modal -->
+<!-- Player -->
 <div id="playerModal">
-  <button id="closeModal">✕</button>
-  <iframe id="player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  <a id="downloadLink" class="download-btn" target="_blank">Download MP3</a>
+  <span id="closeModal">✖</span>
+  <iframe id="ytPlayer"></iframe>
 </div>
 
-<!-- Welcome Popup -->
+<!-- Popup -->
 <div id="welcomePopup">
-  <div class="popup-content">
-    <h2>Welcome to PrimeXMusic!</h2>
-    <p>Join our Telegram channel for latest updates and music:</p>
-    <a href="https://t.me/PrimeXprem07" target="_blank">Join Telegram</a>
-    <br>
-    <button id="closeWelcome">Continue to site</button>
+  <div class="box">
+    <h2>Welcome to PrimeXMusic</h2>
+    <p>Join our Telegram Channel</p>
+    <a href="https://t.me/primexprem07" target="_blank">Join Telegram</a>
+    <button id="closeWelcome">Continue</button>
   </div>
 </div>
 
 <script>
-// ========== WELCOME POPUP ==========
-window.addEventListener('load', function(){
-  if(!localStorage.getItem('primeXMusicVisited')){
-    document.getElementById('welcomePopup').style.display = 'flex';
-    localStorage.setItem('primeXMusicVisited', 'yes');
+const RAPID_KEY = "151daf439dmsh9dfb5ef94457a13p176fa4jsn3abbbe874a8e
+";  // ← यहां अपनी key paste करो
+const API_URL = "https://youtube-v3-data.p.rapidapi.com/search";
+
+window.onload = () => {
+  if(!localStorage.getItem("visited")){
+    document.getElementById("welcomePopup").style.display="flex";
+    localStorage.setItem("visited","yes");
   }
-});
-document.getElementById('closeWelcome').addEventListener('click', function(){
-  document.getElementById('welcomePopup').style.display = 'none';
-});
+  autoLoad();
+};
 
-// ========== FETCH MUSIC WITHOUT API KEY ==========
-function loadTrendingMusic(){
-  fetch("https://piped.video/api/v1/trending")
-  .then(res => res.json())
-  .then(data => displaySongs(data))
-  .catch(() => {
-    document.getElementById("music-container").innerHTML = "<p>Unable to load songs.</p>";
-  });
+document.getElementById("closeWelcome").onclick = () => {
+  document.getElementById("welcomePopup").style.display="none";
+};
+
+document.getElementById("searchBtn").onclick = () => search();
+
+async function search(){
+  let q = document.getElementById("searchInput").value.trim();
+  if(!q){return;}
+  fetchSongs(q);
 }
 
-// SEARCH MUSIC
-function searchMusic(query){
-  fetch("https://piped.video/api/v1/search?q=" + encodeURIComponent(query))
-  .then(res => res.json())
-  .then(data => displaySongs(data.items))
-  .catch(() => {
-    document.getElementById("music-container").innerHTML = "<p>Error searching songs.</p>";
-  });
+async function autoLoad(){
+  fetchSongs("latest hindi songs");
 }
 
-// DISPLAY SONGS
-function displaySongs(list){
-  let box = document.getElementById("music-container");
+async function fetchSongs(query){
+  document.getElementById("results").innerHTML = "<p style='color:#fff;'>Loading...</p>";
+
+  try{
+    let res = await fetch(`${API_URL}?q=${encodeURIComponent(query)}&maxResults=20`, {
+      method:"GET",
+      headers:{
+        "x-rapidapi-key": RAPID_KEY,
+        "x-rapidapi-host": "youtube-v3-data.p.rapidapi.com"
+      }
+    });
+
+    let data = await res.json();
+    render(data.items || []);
+  }catch(e){
+    document.getElementById("results").innerHTML = "<p>Error loading songs...</p>";
+  }
+}
+
+function render(list){
+  let box = document.getElementById("results");
   box.innerHTML = "";
 
-  list.forEach(video => {
-    if(!video.thumbnail) return;
+  list.forEach(v=>{
+    if(!v.videoId) return;
 
-    let card = document.createElement("div");
-    card.className = "song-card";
-
-    card.innerHTML = `
-      <img src="${video.thumbnail}" onclick="playSong('${video.id}')">
-      <p>${video.title}</p>
+    box.innerHTML += `
+      <div class="card" onclick="play('${v.videoId}')">
+        <img src="${v.thumbnail?.[1]?.url || ''}">
+        <p>${v.title}</p>
+      </div>
     `;
-
-    box.appendChild(card);
   });
 }
 
-// PLAY SONG IN MODAL
-function playSong(id){
-  let modal = document.getElementById("playerModal");
-  let player = document.getElementById("player");
-  let download = document.getElementById("downloadLink");
-
-  player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-  download.href = `https://www.yt-download.org/api/button/mp3/${id}`;
-
-  modal.style.display = "flex";
+function play(id){
+  document.getElementById("playerModal").style.display="flex";
+  document.getElementById("ytPlayer").src = `https://www.youtube.com/embed/${id}?autoplay=1`;
 }
 
-// CLOSE MODAL
-document.getElementById("closeModal").addEventListener("click", function(){
-  document.getElementById("playerModal").style.display = "none";
-  document.getElementById("player").src = "";
-});
-
-// SEARCH FORM ACTION
-document.getElementById("searchForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  let q = document.getElementById("searchInput").value.trim();
-  if(q) searchMusic(q);
-});
-
-// AUTO LOAD TRENDING MUSIC ON PAGE LOAD
-loadTrendingMusic();
+document.getElementById("closeModal").onclick = () => {
+  document.getElementById("playerModal").style.display="none";
+  document.getElementById("ytPlayer").src = "";
+};
 </script>
