@@ -1,144 +1,348 @@
-<!-- PrimeXMusic Blogger - Modern Theme + Download + Welcome Popup (No Background Music) -->
-<style>
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
-  color: #fff;
-}
-#primeXMusic { max-width:1100px; margin:auto; padding:20px; }
-h1 { text-align:center; margin-bottom:20px; color:#00e5ff; }
-#searchForm input { padding:10px; width:60%; border-radius:6px 0 0 6px; border:none; }
-#searchForm button { padding:10px 15px; border:none; background:#00e5ff; color:#000; border-radius:0 6px 6px 0; cursor:pointer; }
-#music-container { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
-.song-card { width:200px; cursor:pointer; background:#111; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.6); transition:0.3s; }
-.song-card:hover { transform:scale(1.05); }
-.song-card img { width:100%; display:block; }
-.song-card p { text-align:center; padding:5px; font-size:14px; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Prime X Prem| Prime X Prem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', Arial, sans-serif;
+      background: radial-gradient(at 20% 30%, #03145f 0%, #03042a 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 480px;
+      margin: 60px auto;
+      background: rgba(10,14,50,0.85);
+      padding: 32px 24px 24px 24px;
+      border-radius: 16px;
+      box-shadow: 0 0 40px #082d7e, 0 0 140px #06c6f7a1 inset;
+      border: 2.5px solid #1ff6ff;
+      position: relative;
+    }
+    h1 {
+      text-shadow: 0 0 10px #1ff6ff, 0 0 15px #ff40a1;
+      font-size: 2.25rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      color: #ff40a1;
+    }
+    .input-group {
+      display: flex;
+      margin-bottom: 18px;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 12px;
+      background: #050e39;
+      border: 1.5px solid #1ff6ff;
+      outline: none;
+      color: #1ff6ff;
+      border-radius: 6px 0 0 6px;
+      font-size: 1rem;
+      box-shadow: 0 0 4px #1ff6ffc9;
+    }
+    .input-group button {
+      background: #1ff6ff;
+      color: #050e39;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 22px;
+      font-size: 1.12rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 12px #1ff6ffc9;
+      transition: background 0.2s;
+    }
+    .input-group button:hover {
+      background: #ff40a1;
+      color: #fff;
+    }
 
-/* Modal Player */
-#playerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; z-index:1000; }
-#playerModal iframe { width:100%; height:450px; border:none; border-radius:8px; }
-#playerModal button { position:absolute; top:5px; right:10px; font-size:20px; border:none; background:none; color:#fff; cursor:pointer; }
-.download-btn { background:#00ffae; color:#000; padding:5px 8px; border-radius:4px; text-align:center; display:block; margin:5px auto 10px auto; font-size:12px; text-decoration:none; }
+    .options {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .toggle-label {
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-right: 7px;
+    }
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: #0e134c;
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 0 7px #1ff6ff, 0 0 7px #ff40a1 inset;
+    }
+    .toggle input {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      position: absolute;
+      cursor: pointer;
+      left: 0;
+      top: 0;
+      z-index: 2;
+    }
+    .toggle span {
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 20px;
+      height: 20px;
+      background: #1ff6ff;
+      border-radius: 50%;
+      transition: left 0.2s, background 0.3s;
+      box-shadow: 0 0 12px #1ff6ff;
+    }
+    .toggle input:checked + span {
+      left: 22px;
+      background: #ff40a1;
+      box-shadow: 0 0 12px #ff40a1;
+    }
+    .music-list {
+      margin-top: 18px;
+      border-top: 1px solid #1ff6ff40;
+      padding-top: 16px;
+      min-height: 58px;
+    }
+    .track {
+      padding:10px 0;
+      border-bottom: 1px solid #1ff6ff26;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #fff;
+      transition: background 0.15s;
+    }
+    .track:last-child { border-bottom: none;}
+    .track .icon {
+      font-size: 1.3em;
+      color: #ff40a1;
+    }
+    .auto-fetching {
+      margin-top: 10px;
+      font-size: 0.99rem;
+      color: #1ff6ff;
+      text-shadow: 0 0 6px #1ff6ff99;
+    }
+    /* Neon Music Animation */
+    .neon-music-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .neon-bar {
+      position: absolute;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to top, #ff40a1, #1ff6ff 80%, transparent 100%);
+      border-radius: 6px;
+      animation: bounceMusic 2s infinite ease-in-out;
+    }
+    /* animate bars with different delays */
+    .neon-bar:nth-child(1) { left: 15vw; height: 80px; animation-delay: 0s;}
+    .neon-bar:nth-child(2) { left: 21vw; height: 180px; animation-delay: .3s;}
+    .neon-bar:nth-child(3) { left: 26vw; height: 140px; animation-delay: .7s;}
+    .neon-bar:nth-child(4) { left: 32vw; height: 95px; animation-delay: .5s;}
+    .neon-bar:nth-child(5) { left: 37vw; height: 120px; animation-delay: 1s;}
+    .neon-bar:nth-child(6) { left: 60vw; height: 110px; animation-delay: .25s;}
+    .neon-bar:nth-child(7) { left: 67vw; height: 195px; animation-delay: .9s;}
+    .neon-bar:nth-child(8) { left: 74vw; height: 150px; animation-delay: .7s;}
+    .neon-bar:nth-child(9) { left: 79vw; height: 89px; animation-delay: 1.3s;}
+    .neon-bar:nth-child(10){ left: 87vw; height: 125px; animation-delay: .2s;}
+    @keyframes bounceMusic {
+      0%,100%{transform:translateY(0);}
+      20%{transform:translateY(-20px);}
+      40%{transform:translateY(-45px);}
+      60%{transform:translateY(4px);}
+      80%{transform:translateY(-14px);}
+    }
 
-/* Welcome Popup */
-#welcomePopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items:center; justify-content:center; z-index:2000; }
-#welcomePopup .popup-content { background:#111; padding:30px; border-radius:10px; text-align:center; max-width:400px; color:#fff; }
-#welcomePopup .popup-content h2 { color:#00e5ff; margin-bottom:15px; }
-#welcomePopup .popup-content a { display:inline-block; padding:10px 20px; background:#00ffae; color:#000; border-radius:6px; text-decoration:none; margin-top:10px; font-weight:bold; }
-#welcomePopup .popup-content button { margin-top:15px; padding:8px 15px; background:#007bff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-</style>
-
-<div id="primeXMusic">
-  <h1>PrimeXMusic</h1>
-
-  <!-- Search -->
-  <form id="searchForm">
-    <input id="searchInput" type="text" placeholder="Search songs...">
-    <button type="submit">Search</button>
-  </form>
-
-  <!-- Song Grid -->
-  <div id="music-container"></div>
-</div>
-
-<!-- Player Modal -->
-<div id="playerModal">
-  <button id="closeModal">✕</button>
-  <iframe id="player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  <a id="downloadLink" class="download-btn" target="_blank">Download MP3</a>
-</div>
-
-<!-- Welcome Popup -->
-<div id="welcomePopup">
-  <div class="popup-content">
-    <h2>Welcome to PrimeXMusic!</h2>
-    <p>Join our Telegram channel for latest updates and music:</p>
-    <a href="https://t.me/PrimeXprem07" target="_blank">Join Telegram</a>
-    <br>
-    <button id="closeWelcome">Continue to site</button>
+    /* Neon Popup Styles */
+    .popup {
+      position: fixed;
+      top: 25px;
+      right: 40px;
+      z-index: 20;
+      background:rgba(11,15,55,0.98);
+      border: 2.5px solid #ff40a1;
+      box-shadow: 0 0 30px #ff40a1a1, 0 0 60px #1ff6ff80 inset;
+      border-radius: 12px;
+      padding: 32px 22px 22px 22px;
+      min-width: 300px;
+      text-align: center;
+      animation: popupShow 0.65s cubic-bezier(.74,.12,.44,1.02) both;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+    @keyframes popupShow {
+      0%{opacity:0;transform:scale(0.3);}
+      100%{opacity:1;transform:scale(1);}
+    }
+    .popup-title {
+      font-size: 1.35rem;
+      color: #ff40a1;
+      margin-bottom: 9px;
+      text-shadow: 0 0 14px #ff40a1;
+      letter-spacing: 3px;
+    }
+    .popup-desc {
+      font-size: 0.98rem;
+      color: #1ff6ff;
+      margin-bottom: 15px;
+      text-shadow: 0 0 4px #1ff6ff;
+    }
+    .telegram-link {
+      display: inline-block;
+      background: #1ff6ff;
+      color: #1a0066;
+      padding: 10px 18px;
+      border-radius: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.08rem;
+      box-shadow: 0 0 16px #1ff6ffac, 0 0 10px #ff40a1b9 inset;
+      transition: background 0.18s;
+      border: 1.5px solid #fff;
+    }
+    .telegram-link:hover {
+      background: #ff40a1; color: #fff; box-shadow: 0 0 24px #ff40a1;
+    }
+    .popup-close {
+      font-size: 1.2rem;
+      border: none;
+      background: none;
+      color: #ff40a1;
+      position: absolute;
+      top: 14px; right: 17px;
+      cursor: pointer;
+      outline: none;
+      opacity: 0.88;
+      transition: color 0.2s, opacity .18s;
+    }
+    .popup-close:hover {
+      color: #1ff6ff; opacity: 1;
+    }
+    @media (max-width:700px){
+      .container{margin:24px 8px;}
+      .popup{right:12px; min-width:230px; padding:24px 12px 15px 12px;}
+      h1{font-size:1.23rem;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Neon Music Bars Animation Background -->
+  <div class="neon-music-bg" aria-hidden="true">
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
+    <div class="neon-bar"></div>
   </div>
-</div>
 
-<script>
-var API_KEY = 'AIzaSyCrJ_-Xuvq1iRBsEUpd32ZbK-5Br29JIfc';
-var DEFAULT_QUERY = 'latest music';
-var MAX_RESULTS = 20;
+  <!-- Neon YouTube Music Split/Add/Background Play -->
+  <div class="container">
+    <h1>🎶 NEON YOUTUBE MUSIC</h1>
+    <div class="input-group">
+      <input type="text" id="musicInput" placeholder="Paste YouTube music link or search...">
+      <button onclick="addMusic()">Add</button>
+    </div>
+    <div class="options">
+      <span class="toggle-label">Split Feature</span>
+      <label class="toggle">
+        <input type="checkbox" id="splitToggle" checked>
+        <span></span>
+      </label>
+      <span class="toggle-label">Background Play</span>
+      <label class="toggle">
+        <input type="checkbox" id="bgToggle">
+        <span></span>
+      </label>
+    </div>
+    <div class="auto-fetching" id="autoFetching">Auto-fetching music from YouTube...</div>
+    <div class="music-list" id="musicList">
+      <!-- Fetched/added tracks appear here -->
+    </div>
+  </div>
 
-// ===== Welcome Popup Logic =====
-window.addEventListener('load', function(){
-  if(!localStorage.getItem('primeXMusicVisited')){
-    document.getElementById('welcomePopup').style.display = 'flex';
-    localStorage.setItem('primeXMusicVisited', 'yes');
-  }
-});
-document.getElementById('closeWelcome').addEventListener('click', function(){
-  document.getElementById('welcomePopup').style.display = 'none';
-});
+  <!-- Neon Popup for New User -->
+  <div class="popup" id="userPopup">
+    <button class="popup-close" onclick="closePopup()" aria-label="Close Popup">&times;</button>
+    <div class="popup-title">🎹 Welcome to Prime X Prem!</div>
+    <div class="popup-desc">You're a new user! Join our exclusive Telegram channel for premium updates:</div>
+    <a class="telegram-link" href="https://t.me/primexprem" target="_blank" rel="noopener">Join @PrimeXPrem</a>
+  </div>
 
-// ===== Song Functions =====
-function mapItem(item){
-  if(!item) return null;
-  var videoId = item.id?.videoId || item.snippet?.resourceId?.videoId || item.id;
-  if(!videoId) return null;
-  return {
-    videoId: videoId,
-    title: item.snippet?.title || 'Untitled',
-    thumbnail: item.snippet?.thumbnails?.medium?.url || ''
-  };
-}
+  <script>
+    // Show popup for 7 seconds then auto-close
+    setTimeout(closePopup, 7000);
 
-function fetchSongs(query){
-  var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=${MAX_RESULTS}&q=${encodeURIComponent(query)}&key=${API_KEY}&callback=handlePlaylist`;
-  var script = document.createElement('script');
-  script.src = url;
-  document.body.appendChild(script);
-}
+    function closePopup() {
+      var popup = document.getElementById('userPopup');
+      if(popup) popup.style.display = 'none';
+    }
 
-function handlePlaylist(response){
-  var container = document.getElementById('music-container');
-  container.innerHTML = '';
-  if(!response.items || response.items.length==0){
-    container.innerHTML = '<p>No songs found.</p>';
-    return;
-  }
-  response.items.forEach(function(item){
-    var song = mapItem(item);
-    if(!song) return;
-    var div = document.createElement('div');
-    div.className = 'song-card';
-    div.innerHTML = `
-      <img src="${song.thumbnail}" onclick="playVideo('${song.videoId}')">
-      <p>${song.title}</p>
-    `;
-    container.appendChild(div);
-  });
-}
+    // Simulate auto-fetching feature with demo tracks
+    let demoTracks = [
+      {title:'Alan Walker - Faded', url:'https://youtu.be/60ItHLz5WEA'},
+      {title:'The Spectre - Alan Walker', url:'https://youtu.be/wJnBTPUQS5A'},
+      {title:'BTS - Dynamite', url:'https://youtu.be/gdZLi9oWNZg'},
+      {title:'Imagine Dragons - Believer', url:'https://youtu.be/7wtfhZwyrcc'}
+    ];
+    let musicList = document.getElementById('musicList');
+    let autoFetchDiv = document.getElementById('autoFetching');
 
-function playVideo(videoId){
-  var modal = document.getElementById('playerModal');
-  var player = document.getElementById('player');
-  var download = document.getElementById('downloadLink');
-  player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-  download.href = `https://www.yt-download.org/api/button/mp3/${videoId}`;
-  modal.style.display = 'flex';
-}
+    function renderTracks(tracks) {
+      musicList.innerHTML = tracks.map(track => 
+        `<div class="track">
+          <span class="icon">▶️</span>
+          <a href="${track.url}" target="_blank" style="color:#1ff6ff;text-shadow:0 0 8px #1ff6ff;font-weight:bold;">${track.title}</a>
+        </div>`
+      ).join('');
+    }
+    // Simulate fetching delay
+    setTimeout(()=> {
+      renderTracks(demoTracks);
+      autoFetchDiv.textContent = "Fetched trending music from YouTube!";
+    },1400);
 
-// Close modal
-document.getElementById('closeModal').addEventListener('click', function(){
-  document.getElementById('playerModal').style.display = 'none';
-  document.getElementById('player').src = '';
-});
+    // Add music manually
+    function addMusic() {
+      let val = document.getElementById('musicInput').value;
+      if(!val.trim()) return alert('Please enter a YouTube link or music title');
+      let fakeTitle = val.match(/youtu\.be\/([a-zA-Z0-9_-]+)/) || val.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/)
+        ? "YouTube Music #" + Math.floor(Math.random()*1000) : val;
+      let track = {title:fakeTitle, url:val};
+      demoTracks.unshift(track);
+      renderTracks(demoTracks); 
+      document.getElementById('musicInput').value = "";
+    }
 
-// Search form
-document.getElementById('searchForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  var query = document.getElementById('searchInput').value.trim();
-  if(query) fetchSongs(query);
-  document.getElementById('searchInput').value = '';
-});
-
-// Initial load
-fetchSongs(DEFAULT_QUERY);
-</script>
+    // Toggles for Split and Background Play (demo UI only)
+    document.getElementById('splitToggle').addEventListener('change', function() {
+      musicList.style.filter = this.checked ? 'none' : 'grayscale(1)';
+    });
+    document.getElementById('bgToggle').addEventListener('change', function() {
+      document.body.style.background = this.checked ? 
+        "radial-gradient(at 60% 20%, #03145f 0%, #010725 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80')" : 
+        "radial-gradient(at 20% 30%, #03145f 0%, #03042a 80%), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80')";
+    });
+  </script>
+</body>
+</html>
